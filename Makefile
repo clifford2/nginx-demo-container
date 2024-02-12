@@ -3,7 +3,7 @@ REGISTRY := docker.io
 PROJECT := cliffordw
 IMAGE := nginx-demo
 IMAGE_REF := $(REGISTRY)/$(PROJECT)/$(IMAGE)
-TAG := 1.0.0
+TAG := 1.0.1
 
 # Git commit hash
 HASH := $(shell git rev-parse --short HEAD)
