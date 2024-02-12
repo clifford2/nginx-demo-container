@@ -1,0 +1,8 @@
+*.swp
+*.bak
+*.log
+.vscode
+.DS_Store
+.bash_history
+.vscode
+.lesshst
