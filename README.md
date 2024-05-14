@@ -3,7 +3,7 @@
 A very simple demo container image, running [Nginx](https://nginx.org/)
 on port 8080.
 
-It returns which contains:
+It returns simple files which contain:
 
 - The image build time (handy for CI/CD tests/demos)
 - Container hostname (handy for load balancing tests/demos).
