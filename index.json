@@ -1,0 +1,4 @@
+{
+"build_time": "{TIME}",
+"container_hostname": "{HOSTNAME}"
+}
