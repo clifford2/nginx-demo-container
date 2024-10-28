@@ -1,0 +1,99 @@
+---
+# Kubernetes deployment for Nginx Demo
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-demo
+  labels:
+    app: nginx-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-demo
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      containers:
+      - name: nginx-demo
+        image: docker.io/cliffordw/nginx-demo:1.0.5
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        startupProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 5
+          failureThreshold: 12
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: nginx-tmp-1
+          mountPath: /tmp
+        - name: nginx-tmp-2
+          mountPath: /usr/share/nginx/html
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+      securityContext:
+        fsGroup: 1234
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: nginx-tmp-1
+        emptyDir: {}
+      - name: nginx-tmp-2
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-demo
+  labels:
+    app: nginx-demo
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: nginx-demo
+  sessionAffinity: None
