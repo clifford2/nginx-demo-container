@@ -1,7 +1,6 @@
 #!/bin/bash
 # Build the container image & perform basic test
-
-set -x
+# set -x
 
 ver=$(cat .version)
 podman build -t docker.io/cliffordw/nginx-demo:${ver} .
@@ -13,14 +12,19 @@ jsonver=$(curl --silent http://127.0.0.1:8080/index.json | jq '.image_version' -
 xdg-open http://127.0.0.1:8080/index.html
 
 if [ "$ver" != "$textver" ]
-	echo "Something's wrong - expected version [$ver], got text version [$textver]"
+then
+	echo "ERROR: expected version [$ver], got text version [$textver]"
 	exit 1
+else
+	echo "OK: text version"
 fi
 
 if [ "$ver" != "$jsonver" ]
 then
-	echo "Something's wrong - expected version [$ver], got text version [$jsonver]"
+	echo "ERROR: expected version [$ver], got JSON version [$jsonver]"
 	exit 1
+else
+	echo "OK: JSON version"
 fi
 
 sed -i -e "s|image: .*$|image: docker.io/cliffordw/nginx-demo:${ver}|" k8s.yaml

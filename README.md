@@ -21,7 +21,7 @@ An image built from this code is available on Docker Hub as
 You can run it locally with:
 
 ```sh
-podman run -d -p 8080:8080 docker.io/cliffordw/nginx-demo:1.0.6
+podman run -d -p 8080:8080 docker.io/cliffordw/nginx-demo:1.0.7
 curl http://127.0.0.1:8080/index.json
 ```
 
