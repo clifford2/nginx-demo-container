@@ -1,5 +1,6 @@
 {
 "image_version": "{VERSION}",
-"build_time": "{TIME}",
+"build_time": "{BUILDTIME}",
+"start_time": "{CURRTIME}",
 "container_hostname": "{HOSTNAME}"
 }

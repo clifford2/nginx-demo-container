@@ -6,9 +6,9 @@ USER root
 RUN echo 'Insert timestamp & version' \
 	&& timestamp=$(TZ=UTC date '+%Y-%m-%dT%H:%M:%SZ') \
 	&& ver=$(cat /usr/share/nginx/html/.version) \
-	&& sed -i -e "s/{TIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.html \
-	&& sed -i -e "s/{TIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.txt \
-	&& sed -i -e "s/{TIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.json
+	&& sed -i -e "s/{BUILDTIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.html \
+	&& sed -i -e "s/{BUILDTIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.txt \
+	&& sed -i -e "s/{BUILDTIME}/${timestamp}/" -e "s/{VERSION}/${ver}/" /usr/share/nginx/html/index.json
 # Move files elsewhere, so /usr/share/nginx/html/ can be mounted as a volume,
 # and container root FS can be mounted read-only
 RUN echo 'Handling permissions' \
