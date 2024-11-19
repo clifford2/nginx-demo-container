@@ -21,8 +21,13 @@ An image built from this code is available on Docker Hub as
 You can run it locally with:
 
 ```sh
-podman run -d -p 8080:8080 docker.io/cliffordw/nginx-demo:1.0.9
-curl http://127.0.0.1:8080/index.json
+podman run -d --rm -p 8081:8080 --name nginx-demo-red docker.io/cliffordw/nginx-demo:1.1.0
+podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue docker.io/cliffordw/nginx-demo:1.1.0
+podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green docker.io/cliffordw/nginx-demo:1.1.0
+curl http://127.0.0.1:8081/index.json
+curl http://127.0.0.1:8082/index.json
+curl http://127.0.0.1:8083/index.json
+podman stop nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
 An example Kubernetes manifest is also available in `k8s.yaml`.

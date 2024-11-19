@@ -21,7 +21,7 @@ spec:
       hostIPC: false
       containers:
       - name: nginx-demo
-        image: docker.io/cliffordw/nginx-demo:1.0.9
+        image: docker.io/cliffordw/nginx-demo:1.1.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: http

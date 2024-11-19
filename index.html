@@ -33,10 +33,22 @@ body {
 	background: #962121;
 	color: #ffd1d1;
 }
-hr .bob {
-  border: 1px;
-  height: 1px;
-  background-image: linear-gradient (to right, rgba(0, 0, 0, 0), rgba(255, 255, 255, 1), rgba(0, 0, 0, 0));
+#wrapperbox {
+	padding: 1em;
+	text-align: center;
+	border: 1px solid black;
+}
+#colorbox {
+	background-color: {COLOR};
+	padding: 1em 2em;
+	text-align: center;
+	border: 1px solid white;
+}
+.white {
+	color: white;
+}
+.black {
+	color: black;
 }
 </style>
 </head>
@@ -55,6 +67,9 @@ hr .bob {
 <li>Hostname: <span class="highlight2">{HOSTNAME}</span></li>
 <li>Container start time: <span class="highlight1">{CURRTIME}</span></li>
 </ul>
+<div id="wrapperbox">
+<div id="colorbox"><span class="white">{COLOR}</span><br><span class="black">{COLOR}</span></div>
+</div>
 <hr>
 <p>Alternate file formats (<em>handy for automated processing</em>):</p>
 <ul>
