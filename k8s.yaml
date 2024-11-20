@@ -3,9 +3,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-demo
+  name: nginx-demo-blue
   labels:
+    app.kubernetes.io/name: nginx-demo-blue
     app: nginx-demo
+    color: blue
 spec:
   replicas: 3
   selector:
@@ -21,12 +23,15 @@ spec:
       hostIPC: false
       containers:
       - name: nginx-demo
-        image: docker.io/cliffordw/nginx-demo:1.1.0
+        image: docker.io/cliffordw/nginx-demo:1.2.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
           containerPort: 8080
           protocol: TCP
+        env:
+        - name: COLOR
+          value: blue
         startupProbe:
           httpGet:
             port: 8080

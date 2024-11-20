@@ -34,13 +34,13 @@ body {
 	color: #ffd1d1;
 }
 #wrapperbox {
-	padding: 1em;
+	padding: 0.5em;
 	text-align: center;
 	border: 1px solid black;
 }
 #colorbox {
 	background-color: {COLOR};
-	padding: 1em 2em;
+	padding: 0.5em 2em;
 	text-align: center;
 	border: 1px solid white;
 }
@@ -55,7 +55,7 @@ body {
 <body>
 <div id="content">
 <h1 class="ttl">Demo Container</h1>
-<p>A very simple demo container image, running <a href="https://nginx.org/">Nginx</a> as an unprivileged user.</p>
+<p>A very simple demo container, running <a href="https://nginx.org/">Nginx</a> as an unprivileged user.</p>
 <hr>
 <p>Image information (<em>handy for CI/CD tests</em>):</p>
 <ul>
@@ -67,17 +67,20 @@ body {
 <li>Hostname: <span class="highlight2">{HOSTNAME}</span></li>
 <li>Container start time: <span class="highlight1">{CURRTIME}</span></li>
 </ul>
-<div id="wrapperbox">
-<div id="colorbox"><span class="white">{COLOR}</span><br><span class="black">{COLOR}</span></div>
-</div>
 <hr>
 <p>Alternate file formats (<em>handy for automated processing</em>):</p>
 <ul>
 <li>JSON: <a href="index.json">index.json</a></li>
+<li>CSV: <a href="index.csv">index.csv</a> (CR/LF terminated)</li>
 <li>Plain text: <a href="index.txt">index.txt</a></li>
 </ul>
 <hr>
 <p><em>Source code: <a href="https://github.com/clifford2/nginx-demo-container">github.com/clifford2/nginx-demo-container</a></em></p>
+<hr>
+<div id="wrapperbox">
+<div><code>$COLOR</code></div>
+<div id="colorbox"><code><span class="white">background-color: {COLOR}</span><br><span class="black">background-color: {COLOR}</span></code></div>
+</div>
 </div>
 </body>
 </html>

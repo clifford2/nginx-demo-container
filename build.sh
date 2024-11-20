@@ -9,9 +9,18 @@ ver=$(cat .version)
 # podman run --rm -d -p 8080:8080 --name nginx-demo docker.io/cliffordw/nginx-demo:${ver}
 
 make run-dev
-textver=$(curl --silent http://127.0.0.1:8080/index.txt | awk 'BEGIN {FS=":"} {if ($1 == "image_version") {print $2}}')
 jsonver=$(curl --silent http://127.0.0.1:8080/index.json | jq '.image_version' -r)
-xdg-open http://127.0.0.1:8080/index.html
+textver=$(curl --silent http://127.0.0.1:8080/index.txt | awk 'BEGIN {FS=":"} {if ($1 == "image_version") {print $2}}')
+csvver=$(curl --silent http://127.0.0.1:8080/index.csv | awk 'BEGIN {FS=","} {if ($1 == "\"image_version\"") {print $2}}' | sed -e 's/"//g' -e 's/\r//')
+xdg-open http://127.0.0.1:8080/index.html 2>/dev/null
+
+if [ "$ver" != "$jsonver" ]
+then
+	echo "ERROR: expected version [$ver], got JSON version [$jsonver]"
+	exit 1
+else
+	echo "OK: JSON version"
+fi
 
 if [ "$ver" != "$textver" ]
 then
@@ -21,12 +30,12 @@ else
 	echo "OK: text version"
 fi
 
-if [ "$ver" != "$jsonver" ]
+if [ "$ver" != "$csvver" ]
 then
-	echo "ERROR: expected version [$ver], got JSON version [$jsonver]"
+	echo "ERROR: expected version [$ver], got CSV version [$csvver]"
 	exit 1
 else
-	echo "OK: JSON version"
+	echo "OK: csv version"
 fi
 
 sh ./fix-doc-version.sh

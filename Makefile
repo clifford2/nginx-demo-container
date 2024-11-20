@@ -59,7 +59,7 @@ build-dev:
 
 .PHONY: run-dev
 run-dev: build-dev
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) -e COLOR='#333' $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-blue
@@ -107,7 +107,7 @@ bump-version-patch: install-semver
 
 .PHONY: git-tag
 git-tag:
-	@git tag -m "Version $(APP_VERSION) v$(APP_VERSION)"
+	@git tag -m "Version $(APP_VERSION)" $(APP_VERSION)
 
 .PHONY: install-semver
 install-semver:

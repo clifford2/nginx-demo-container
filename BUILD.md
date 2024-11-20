@@ -1,34 +1,39 @@
 # Build Instructions
 
-Build:
+## Development
+
+Build for test:
 
 ```sh
-./build.sh
-curl http://127.0.0.1:8080/index.txt
-curl http://127.0.0.1:8080/index.json
-xdg-open http://127.0.0.1:8080/index.html
+make run-dev
 ```
 
 Stop test container:
 
 ```sh
-podman ps | grep -wq nginx-demo && podman stop nginx-demo
+make stop-dev
+```
+
+## Release
+
+Build for release:
+
+```sh
+make bump-version-{major,minor,patch}
+./build.sh
 ```
 
 Commit & push source:
 
 ```sh
-ver=$(cat .version)
-git add . && git commit -a && git tag -a -m "Version ${ver}" "${ver}"
-git push && git push --tags
+git add . && git commit
+make git-tag
+git push --follow-tags
 ```
 
 Push image:
 
 ```sh
-ver=$(cat .version)
-podman tag docker.io/cliffordw/nginx-demo:${ver} docker.io/cliffordw/nginx-demo:latest
 podman login docker.io
-podman push docker.io/cliffordw/nginx-demo:${ver}
-podman push docker.io/cliffordw/nginx-demo:latest
+make push-release
 ```
