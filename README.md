@@ -21,9 +21,9 @@ An image built from this code is available on Docker Hub as
 You can run it locally with:
 
 ```sh
-podman run -d --rm -p 8081:8080 --name nginx-demo-red docker.io/cliffordw/nginx-demo:1.2.0
-podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue docker.io/cliffordw/nginx-demo:1.2.0
-podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green docker.io/cliffordw/nginx-demo:1.2.0
+podman run -d --rm -p 8081:8080 --name nginx-demo-red docker.io/cliffordw/nginx-demo:1.2.1
+podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue docker.io/cliffordw/nginx-demo:1.2.1
+podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green docker.io/cliffordw/nginx-demo:1.2.1
 curl http://127.0.0.1:8081/index.json
 curl http://127.0.0.1:8082/index.json
 curl http://127.0.0.1:8083/index.json

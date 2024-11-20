@@ -59,7 +59,7 @@ build-dev:
 
 .PHONY: run-dev
 run-dev: build-dev
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) -e COLOR='#333' $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-blue

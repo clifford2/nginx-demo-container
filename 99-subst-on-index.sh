@@ -1,6 +1,6 @@
 #!/bin/sh
 umask 022
-COLOR=${COLOR:-'#a64893'}
+COLOR=${COLOR:-'#333'}
 test -d /usr/share/nginx/html || mkdir /usr/share/nginx/html
 cat /usr/share/nginx/html-template/50x.html > /usr/share/nginx/html/50x.html
 timestamp=$(TZ=UTC date '+%Y-%m-%dT%H:%M:%SZ')
