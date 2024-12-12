@@ -44,6 +44,8 @@ help:
 	@echo "  bump-version-{major,minor,patch}: Increment version"
 	@echo "  git-tag:       Tag git repo with current version"
 	@echo "  build-release: Build release image ($(IMGRELTAG))"
+	@echo "  run-release:   Run DEFAULT (red) release container on port $(DEVPORT)"
+	@echo "  stop-release:  Stop release container"
 	@echo "  push-release:  Push release image ($(IMGRELTAG))"
 	@echo ""
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
@@ -59,17 +61,17 @@ build-dev:
 
 .PHONY: run-dev
 run-dev: build-dev
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-blue
 run-dev-blue: build-dev
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) -e COLOR=blue $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=blue $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-green
 run-dev-green: build-dev
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) -e COLOR=green $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=green $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: stop-dev
@@ -83,7 +85,7 @@ build-release:
 
 .PHONY: run-release
 run-release: build-release
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) $(IMGRELTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: stop-release
