@@ -1,4 +1,4 @@
-FROM docker.io/nginxinc/nginx-unprivileged:1.27.2-alpine3.20
+FROM docker.io/nginxinc/nginx-unprivileged:1.27.3-alpine3.20
 
 # Base image serves content of /usr/share/nginx/html on port 8080
 # UID for nginx user in base image

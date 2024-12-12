@@ -81,6 +81,15 @@ build-release:
 	$(BUILD_CMD) -t $(IMGRELTAG) .
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 
+.PHONY: run-release
+run-release: build-release
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) $(IMGRELTAG)
+	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
+
+.PHONY: stop-release
+stop-release:
+	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
+
 .PHONY: push-release
 push-release: build-release
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
