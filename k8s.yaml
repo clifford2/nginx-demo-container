@@ -5,18 +5,29 @@ kind: Deployment
 metadata:
   name: nginx-demo-blue
   labels:
-    app.kubernetes.io/name: nginx-demo-blue
-    app: nginx-demo
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-blue
+    app.kubernetes.io/version: 1.2.2
+    app.kubernetes.io/component: website
+    app: nginx-demo-blue
+    version: 1.2.2
     color: blue
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx-demo
+      app.kubernetes.io/name: nginx-demo
+      app.kubernetes.io/instance: nginx-demo-blue
   template:
     metadata:
       labels:
-        app: nginx-demo
+        app.kubernetes.io/name: nginx-demo
+        app.kubernetes.io/instance: nginx-demo-blue
+        app.kubernetes.io/version: 1.2.2
+        app.kubernetes.io/component: website
+        app: nginx-demo-blue
+        version: 1.2.2
+        color: blue
     spec:
       hostNetwork: false
       hostPID: false
@@ -91,7 +102,12 @@ kind: Service
 metadata:
   name: nginx-demo
   labels:
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-blue
+    app.kubernetes.io/version: 1.2.2
+    app.kubernetes.io/component: website
     app: nginx-demo
+    version: 1.2.2
 spec:
   type: ClusterIP
   ports:
@@ -100,5 +116,6 @@ spec:
     protocol: TCP
     targetPort: http
   selector:
-    app: nginx-demo
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-blue
   sessionAffinity: None
