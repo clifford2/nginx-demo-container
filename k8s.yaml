@@ -7,10 +7,10 @@ metadata:
   labels:
     app.kubernetes.io/name: nginx-demo
     app.kubernetes.io/instance: nginx-demo-blue
-    app.kubernetes.io/version: 1.2.2
+    app.kubernetes.io/version: 1.2.3
     app.kubernetes.io/component: website
     app: nginx-demo-blue
-    version: 1.2.2
+    version: 1.2.3
     color: blue
 spec:
   replicas: 3
@@ -23,10 +23,10 @@ spec:
       labels:
         app.kubernetes.io/name: nginx-demo
         app.kubernetes.io/instance: nginx-demo-blue
-        app.kubernetes.io/version: 1.2.2
+        app.kubernetes.io/version: 1.2.3
         app.kubernetes.io/component: website
         app: nginx-demo-blue
-        version: 1.2.2
+        version: 1.2.3
         color: blue
     spec:
       hostNetwork: false
@@ -34,7 +34,7 @@ spec:
       hostIPC: false
       containers:
       - name: nginx-demo
-        image: docker.io/cliffordw/nginx-demo:1.2.2
+        image: docker.io/cliffordw/nginx-demo:1.2.3
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
@@ -104,10 +104,10 @@ metadata:
   labels:
     app.kubernetes.io/name: nginx-demo
     app.kubernetes.io/instance: nginx-demo-blue
-    app.kubernetes.io/version: 1.2.2
+    app.kubernetes.io/version: 1.2.3
     app.kubernetes.io/component: website
     app: nginx-demo
-    version: 1.2.2
+    version: 1.2.3
 spec:
   type: ClusterIP
   ports:

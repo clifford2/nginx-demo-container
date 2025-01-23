@@ -22,4 +22,7 @@ RUN echo 'Insert image details' \
 	&& mkdir /usr/share/nginx/html \
 	&& chown $UID:$UID /usr/share/nginx/html
 
+# Address CVE-2024-11053 (curl netrc password leak)
+RUN /sbin/apk add --no-cache curl=8.11.1-r0
+
 USER $UID
