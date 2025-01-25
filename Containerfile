@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 FROM docker.io/nginxinc/nginx-unprivileged:1.27.3-alpine3.20
 
 # Base image serves content of /usr/share/nginx/html on port 8080

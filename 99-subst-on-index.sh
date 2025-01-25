@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 umask 022
 COLOR=${COLOR:-'#333'}
 test -d /usr/share/nginx/html || mkdir /usr/share/nginx/html

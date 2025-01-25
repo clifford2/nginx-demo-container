@@ -1,10 +1,9 @@
-# Nginx Demo
+# Nginx Demo Container Image
+
+## About
 
 A very simple demo container image, running [Nginx](https://nginx.org/)
 as a non root, unprivileged user, on port 8080.
-
-The is a demo, for educational purposes only.
-It is provided *AS IS*, without warranty of any kind - See `LICENSE`.
 
 It returns simple files which contain:
 
@@ -22,7 +21,9 @@ This output is available in the following files / formats:
 An image built from this code is available on Docker Hub as
 [`cliffordw/nginx-demo`](https://hub.docker.com/r/cliffordw/nginx-demo).
 
-You can run it locally with:
+## Using The Image
+
+You can run the image locally with:
 
 ```sh
 podman run -d --rm -p 8081:8080 --name nginx-demo-red docker.io/cliffordw/nginx-demo:1.2.3
@@ -35,3 +36,17 @@ podman stop nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
 An example Kubernetes manifest is also available in `k8s.yaml`.
+
+## License & Disclaimer
+
+This code is shared under the BSD 2-Clause "Simplified" License.
+It is provided *AS IS*, without warranty of any kind.
+See [`LICENSES/BSD-2-Clause.txt`](LICENSES/BSD-2-Clause.txt) for the full license text and disclaimer.
+
+## Security
+
+This is a demo, provided for educational purposes only.
+
+While it is updated as often as possible, support is provided on a best effort basis only.
+
+Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/nginx-demo-container/issues).

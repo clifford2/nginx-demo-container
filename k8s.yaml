@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
 ---
 # Kubernetes deployment for Nginx Demo
 apiVersion: apps/v1
