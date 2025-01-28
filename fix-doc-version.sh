@@ -2,7 +2,7 @@
 
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-License-Identifier: MIT-0
 
 # Fix version number in doc
 

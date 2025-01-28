@@ -2,7 +2,7 @@
 
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-License-Identifier: MIT-0
 
 # Build the container image & perform basic test
 # set -x

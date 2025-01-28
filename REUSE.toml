@@ -4,4 +4,4 @@ version = 1
 path = ["*.md", "index.json", "index.txt", "index.csv", ".version"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© 2024 Clifford Weinmann <clifford@weinmann.africa>"
-SPDX-License-Identifier = "BSD-2-Clause"
+SPDX-License-Identifier = "MIT-0"

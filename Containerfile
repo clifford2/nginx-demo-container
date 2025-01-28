@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: BSD-2-Clause
+# SPDX-License-Identifier: MIT-0
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.27.3-alpine3.20
 
