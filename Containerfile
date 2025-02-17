@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT-0
 
-FROM docker.io/nginxinc/nginx-unprivileged:1.27.3-alpine3.20
+FROM docker.io/nginxinc/nginx-unprivileged:1.27.4-alpine3.21
 
 # Base image serves content of /usr/share/nginx/html on port 8080
 # UID for nginx user in base image
@@ -26,7 +26,6 @@ RUN echo 'Insert image details' \
 	&& mkdir /usr/share/nginx/html \
 	&& chown $UID:$UID /usr/share/nginx/html
 
-# Address CVE-2024-11053 (curl netrc password leak)
-RUN /sbin/apk add --no-cache curl=8.11.1-r0
+RUN /sbin/apk add --no-cache curl
 
 USER $UID
