@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: MIT-0
 
 # Config
-REPOBASE := docker.io/cliffordw
+# REPOBASE := ghcr.io/clifford2
+REPOBASE := registry.h.c6d.xyz/clifford
 IMGBASENAME := nginx-demo
 DEVTAG := dev
 DEVPORT := 8080
@@ -47,10 +48,10 @@ help:
 	@echo "  get-version:   Show current version number"
 	@echo "  bump-version-{major,minor,patch}: Increment version"
 	@echo "  git-tag:       Tag git repo with current version"
-	@echo "  build-release: Build release image ($(IMGRELTAG))"
+#	@echo "  build-release: Build release image ($(IMGRELTAG))"
 	@echo "  run-release:   Run DEFAULT (red) release container on port $(DEVPORT)"
 	@echo "  stop-release:  Stop release container"
-	@echo "  push-release:  Push release image ($(IMGRELTAG))"
+#	@echo "  push-release:  Push release image ($(IMGRELTAG))"
 	@echo ""
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
 	@echo "Would build $(IMGRELTAG)"
@@ -82,10 +83,11 @@ run-dev-green: build-dev
 stop-dev:
 	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
 
-.PHONY: build-release
-build-release:
-	$(BUILD_CMD) -t $(IMGRELTAG) .
-	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
+# @echo 'No longer required - built by GitHub Action when pushing tagged commit'
+# .PHONY: build-release
+# build-release:
+#	$(BUILD_CMD) -t $(IMGRELTAG) .
+#	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 
 .PHONY: run-release
 run-release: build-release
@@ -96,10 +98,10 @@ run-release: build-release
 stop-release:
 	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
 
-.PHONY: push-release
-push-release: build-release
-	$(CONTAINER_ENGINE) push $(IMGRELTAG)
-	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
+# .PHONY: push-release
+# push-release: build-release
+#	$(CONTAINER_ENGINE) push $(IMGRELTAG)
+#	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
 
 .PHONY: get-version
 get-version:

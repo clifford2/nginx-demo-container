@@ -18,17 +18,17 @@ This output is available in the following files / formats:
 - Plain text: `index.txt`
 - Comma-separated values: `index.csv`
 
-An image built from this code is available on Docker Hub as
-[`cliffordw/nginx-demo`](https://hub.docker.com/r/cliffordw/nginx-demo).
+An image built from this code is available at
+[`ghcr.io/clifford2/nginx-demo`](https://ghcr.io/clifford2/nginx-demo).
 
 ## Using The Image
 
 You can run the image locally with:
 
 ```sh
-podman run -d --rm -p 8081:8080 --name nginx-demo-red docker.io/cliffordw/nginx-demo:1.2.3
-podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue docker.io/cliffordw/nginx-demo:1.2.3
-podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green docker.io/cliffordw/nginx-demo:1.2.3
+podman run -d --rm -p 8081:8080 --name nginx-demo-red ghcr.io/clifford2/nginx-demo:1.2.3
+podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue ghcr.io/clifford2/nginx-demo:1.2.3
+podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green ghcr.io/clifford2/nginx-demo:1.2.3
 curl http://127.0.0.1:8081/index.json
 curl http://127.0.0.1:8082/index.txt
 curl http://127.0.0.1:8083/index.csv
