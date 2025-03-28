@@ -124,6 +124,11 @@ bump-version-patch: install-semver
 git-tag:
 	@git tag -m "Version $(APP_VERSION)" $(APP_VERSION)
 
+.PHONY: git-push
+git-push:
+	@git push --follow-tags
+
+
 .PHONY: install-semver
 install-semver:
 	@test -d ~/bin || mkdir ~/bin
