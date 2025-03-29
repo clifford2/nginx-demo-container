@@ -2,15 +2,10 @@
 
 ## Development
 
-Build for test:
-
 ```sh
-make run-dev
-```
-
-Stop test container:
-
-```sh
+make build-dev
+make test-dev
+make open-dev
 make stop-dev
 ```
 
@@ -20,7 +15,7 @@ Build for release:
 
 ```sh
 make bump-version-{major,minor,patch}
-./build.sh
+make build-release
 ```
 
 Commit & push source:
@@ -28,12 +23,11 @@ Commit & push source:
 ```sh
 git add . && git commit
 make git-tag
-git push --follow-tags
+make git-push
 ```
 
 Push image:
 
 ```sh
-podman login docker.io
 make push-release
 ```

@@ -4,7 +4,8 @@
 
 # Config
 # REPOBASE := ghcr.io/clifford2
-REPOBASE := registry.h.c6d.xyz/clifford
+REGISTRY := registry.h.c6d.xyz
+REPOBASE := $(REGISTRY)/clifford
 IMGBASENAME := nginx-demo
 DEVTAG := dev
 DEVPORT := 8080
@@ -41,15 +42,18 @@ all: help
 help:
 	@echo "No default target configured - please specify the desired target:"
 	@echo "  build-dev:     Build development image ($(IMGDEVTAG))"
-	@echo "  run-dev:       Run DEFAULT (red) development container on port $(DEVPORT)"
+	@echo "  test-dev:      Test the development image (Trivy, curl)"
+	@echo "  run-dev:       Run DEFAULT (no colour override) development container on port $(DEVPORT)"
 	@echo "  run-dev-blue:  Run BLUE development container on port $(DEVPORT)"
 	@echo "  run-dev-green: Run GREEN development container on port $(DEVPORT)"
+	@echo "  run-dev-red:   Run RED development container on port $(DEVPORT)"
+	@echo "  open-dev:      Open development container in browser"
 	@echo "  stop-dev:      Stop development container"
 	@echo "  get-version:   Show current version number"
 	@echo "  bump-version-{major,minor,patch}: Increment version"
 	@echo "  git-tag:       Tag git repo with current version"
 	@echo "  build-release: Build release image ($(IMGRELTAG))"
-	@echo "  run-release:   Run DEFAULT (red) release container on port $(DEVPORT)"
+	@echo "  run-release:   Run DEFAULT release container on port $(DEVPORT)"
 	@echo "  stop-release:  Stop release container"
 	@echo "  push-release:  Push release image ($(IMGRELTAG))"
 	@echo ""
@@ -65,28 +69,44 @@ build-dev:
 	$(BUILD_CMD) -t $(IMGDEVTAG) .
 
 .PHONY: run-dev
-run-dev: build-dev
+run-dev:
 	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-blue
-run-dev-blue: build-dev
+run-dev-blue:
 	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=blue $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-green
-run-dev-green: build-dev
+run-dev-green:
 	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=green $(IMGDEVTAG)
+	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
+
+.PHONY: run-dev-red
+run-dev-red:
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=red $(IMGDEVTAG)
 	@echo "Access the container at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: stop-dev
 stop-dev:
 	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
 
+.PHONY: test-dev
+test-dev: build-dev
+	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
+	trivy image $(IMGDEVTAG)
+	@make --quiet run-dev
+	@bash ./build/test.sh
+	@make --quiet stop-dev
+
+.PHONY: open-dev
+open-dev: run-dev
+	@xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null
+
 .PHONY: build-release
 build-release:
 	$(BUILD_CMD) -t $(IMGRELTAG) .
-	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 
 .PHONY: run-release
 run-release: build-release
@@ -99,7 +119,9 @@ stop-release:
 
 .PHONY: push-release
 push-release: build-release
+	$(CONTAINER_ENGINE) login $(REGISTRY)
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
 
 .PHONY: get-version
@@ -109,17 +131,17 @@ get-version:
 .PHONY: bump-version-major
 bump-version-major: install-semver
 	@~/bin/semver bump major $(APP_VERSION) > .version
-	@sh ./fix-doc-version.sh
+	@sh ./build/fix-doc-version.sh
 
 .PHONY: bump-version-minor
 bump-version-minor: install-semver
 	@~/bin/semver bump minor $(APP_VERSION) > .version
-	@sh ./fix-doc-version.sh
+	@sh ./build/fix-doc-version.sh
 
 .PHONY: bump-version-patch
 bump-version-patch: install-semver
 	@~/bin/semver bump patch $(APP_VERSION) > .version
-	@sh ./fix-doc-version.sh
+	@sh ./build/fix-doc-version.sh
 
 .PHONY: git-tag
 git-tag:
@@ -128,7 +150,6 @@ git-tag:
 .PHONY: git-push
 git-push:
 	@git push --follow-tags
-
 
 .PHONY: install-semver
 install-semver:
