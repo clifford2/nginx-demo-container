@@ -30,4 +30,13 @@ RUN echo 'Insert image details' \
 
 RUN /sbin/apk add --no-cache curl
 
+# 2025-03-29: Patch the following vulnerabilities in docker.io/nginxinc/nginx-unprivileged:1.27.4-alpine3.21
+# - CVE-2024-56171 libxml2: Use-After-Free in libxml2
+# - CVE-2025-24928 libxml2: Stack-based buffer overflow in xmlSnprintfElements of libxml2
+# - CVE-2025-27113 libxml2: NULL Pointer Dereference in libxml2 xmlPatMatch
+# - CVE-2024-55549 libxslt: Use-After-Free in libxslt (xsltGetInheritedNsList)
+# - CVE-2025-24855 libxslt: Use-After-Free in libxslt numbers.c
+# - CVE-2024-8176 libexpat: expat: Improper Restriction of XML Entity Expansion Depth in libexpat
+RUN /sbin/apk add --no-cache libxml2=2.13.4-r5 libxslt=1.1.42-r2 libexpat=2.7.0-r0
+
 USER $UID
