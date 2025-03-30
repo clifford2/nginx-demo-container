@@ -4,6 +4,7 @@
 
 FROM docker.io/nginxinc/nginx-unprivileged:1.27.4-alpine3.21
 
+LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
 LABEL org.opencontainers.image.source https://github.com/clifford2/nginx-demo-container
 
 # Base image serves content of /usr/share/nginx/html on port 8080

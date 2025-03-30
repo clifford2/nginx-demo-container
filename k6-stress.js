@@ -1,7 +1,5 @@
 /*
- * k6 test script
- *
- * podman run --rm -it --name k6 -v ./k6-stress.js:/src/k6-stress.js k6 run k6-stress.js
+ * Quick https://k6.io/ test script
  */
 import { check, sleep } from 'k6';
 import http from 'k6/http';

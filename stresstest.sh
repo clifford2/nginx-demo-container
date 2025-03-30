@@ -1,8 +1,9 @@
+#!/usr/bin/env bash
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
-:
+# A quick and dirty script to run a bunch of requests
+
 baseurl='http://0.0.0.0:8080/'
 tries=100
 

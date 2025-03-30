@@ -11,23 +11,17 @@ make stop-dev
 
 ## Release
 
-Build for release:
+Update version:
 
 ```sh
 make bump-version-{major,minor,patch}
-make build-release
-```
-
-Commit & push source:
-
-```sh
 git add . && git commit
-make git-tag
-make git-push
+make git-tag git-push
 ```
 
-Push image:
+Release new image:
 
 ```sh
+make build-release
 make push-release
 ```
