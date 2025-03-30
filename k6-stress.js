@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
+// SPDX-License-Identifier: MIT-0
+
 /*
  * Quick https://k6.io/ test script
  */
