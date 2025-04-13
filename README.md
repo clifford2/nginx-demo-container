@@ -50,3 +50,23 @@ This is a demo, provided for educational purposes only.
 While it is updated as often as possible, support is provided on a best effort basis only.
 
 Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/nginx-demo-container/issues).
+
+## Output Samples
+
+Here are some examples of the output from 1.2.7.
+
+HTML:
+
+![HTML](images/sample-html.png "HTML")
+
+JSON:
+
+![JSON](images/sample-json.png "JSON")
+
+CSV:
+
+![CSV](images/sample-csv.png "CSV")
+
+Plain text:
+
+![TXT](images/sample-txt.png "TXT")
