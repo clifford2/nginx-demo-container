@@ -53,7 +53,7 @@ Please report any problems or vulnerabilities by opening a [GitHub issue here](h
 
 ## Output Samples
 
-Here are some examples of the output from 1.2.7.
+Here are some examples of the output from 1.2.4.
 
 HTML:
 
