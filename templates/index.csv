@@ -1,0 +1,5 @@
+"image_version","{VERSION}"
+"build_time","{BUILDTIME}"
+"container_hostname","{HOSTNAME}"
+"start_time","{CURRTIME}"
+"color","{COLOR}"

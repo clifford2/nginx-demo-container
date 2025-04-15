@@ -13,7 +13,7 @@ ARG UID=101
 
 # Add our content
 COPY --chmod=0755 99-subst-on-index.sh /docker-entrypoint.d/99-subst-on-index.sh
-COPY --chmod=0644 index.* .version /usr/share/nginx/html/
+COPY --chmod=0644 templates/index.* .version /usr/share/nginx/html/
 
 # Insert image details (version & build timestamp) into web pages.
 # To allow us to mount the root file system read-only if desired, we will
