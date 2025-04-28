@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT-0
 
 ### Config ###
-# REPOBASE := ghcr.io/clifford2
+# Public image (REPOBASE := ghcr.io/clifford2) is built by GitHub Action
+# This is for my local registry
 REGISTRY := registry.h.c6d.xyz
 REPOBASE := $(REGISTRY)/clifford
 IMGBASENAME := nginx-demo
