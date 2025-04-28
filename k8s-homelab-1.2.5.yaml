@@ -1,0 +1,336 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+  labels:
+    kubernetes.io/metadata.name: demo
+spec:
+  finalizers:
+  - kubernetes
+
+---
+# Kubernetes deployment for Nginx Demo - Red (no COLOR set)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: demo
+  name: nginx-demo-nocolor
+  labels:
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-nocolor
+    app.kubernetes.io/version: 1.2.5
+    app.kubernetes.io/component: website
+    app: nginx-demo-nocolor
+    version: 1.2.5
+    color: default
+    project: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nginx-demo
+      app.kubernetes.io/instance: nginx-demo-nocolor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nginx-demo
+        app.kubernetes.io/instance: nginx-demo-nocolor
+        app.kubernetes.io/version: 1.2.5
+        app.kubernetes.io/component: website
+        app: nginx-demo-nocolor
+        version: 1.2.5
+        color: default
+        project: homelab
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      containers:
+      - name: nginx-demo
+        image: registry.h.c6d.xyz/clifford/nginx-demo:1.2.5
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        startupProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 5
+          failureThreshold: 12
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: 16Mi
+          limits:
+            memory: 32Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: nginx-tmp-1
+          mountPath: /tmp
+        - name: nginx-tmp-2
+          mountPath: /usr/share/nginx/html
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+      securityContext:
+        fsGroup: 1234
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: nginx-tmp-1
+        emptyDir: {}
+      - name: nginx-tmp-2
+        emptyDir: {}
+---
+# Nginx Demo deployment - Blue
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: demo
+  name: nginx-demo-blue
+  labels:
+    project: homelab
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-blue
+    app.kubernetes.io/version: 1.2.5
+    app.kubernetes.io/component: website
+    app: nginx-demo-blue
+    version: 1.2.5
+    color: blue
+    project: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nginx-demo
+      app.kubernetes.io/instance: nginx-demo-blue
+  template:
+    metadata:
+      labels:
+        project: homelab
+        app.kubernetes.io/name: nginx-demo
+        app.kubernetes.io/instance: nginx-demo-blue
+        app.kubernetes.io/version: 1.2.5
+        app.kubernetes.io/component: website
+        app: nginx-demo-blue
+        version: 1.2.5
+        color: blue
+        project: homelab
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      containers:
+      - name: nginx-demo
+        image: registry.h.c6d.xyz/clifford/nginx-demo:1.2.5
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: COLOR
+          value: blue
+        startupProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 5
+          failureThreshold: 12
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: nginx-tmp-1
+          mountPath: /tmp
+        - name: nginx-tmp-2
+          mountPath: /usr/share/nginx/html
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+      securityContext:
+        fsGroup: 1234
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: nginx-tmp-1
+        emptyDir: {}
+      - name: nginx-tmp-2
+        emptyDir: {}
+---
+# Nginx Demo deployment - Green
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: demo
+  name: nginx-demo-green
+  labels:
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-green
+    app.kubernetes.io/version: 1.2.5
+    app.kubernetes.io/component: website
+    app: nginx-demo-green
+    version: 1.2.5
+    color: green
+    project: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nginx-demo
+      app.kubernetes.io/instance: nginx-demo-green
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nginx-demo
+        app.kubernetes.io/instance: nginx-demo-green
+        app.kubernetes.io/version: 1.2.5
+        app.kubernetes.io/component: website
+        app: nginx-demo-green
+        version: 1.2.5
+        color: green
+        project: homelab
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      containers:
+      - name: nginx-demo
+        image: registry.h.c6d.xyz/clifford/nginx-demo:1.2.5
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: COLOR
+          value: green
+        startupProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 5
+          failureThreshold: 12
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /index.json
+          initialDelaySeconds: 10
+          failureThreshold: 2
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: nginx-tmp-1
+          mountPath: /tmp
+        - name: nginx-tmp-2
+          mountPath: /usr/share/nginx/html
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+      securityContext:
+        fsGroup: 1234
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: nginx-tmp-1
+        emptyDir: {}
+      - name: nginx-tmp-2
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: demo
+  name: nginx-demo
+  labels:
+    app.kubernetes.io/name: nginx-demo
+    app.kubernetes.io/instance: nginx-demo-demo
+    app.kubernetes.io/version: 1.2.5
+    app.kubernetes.io/component: website
+    app: nginx-demo
+    version: 1.2.5
+    project: homelab
+spec:
+  # type: ClusterIP
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+    nodePort: 30080
+  selector:
+    app.kubernetes.io/name: nginx-demo
+  sessionAffinity: None
