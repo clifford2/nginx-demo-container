@@ -10,3 +10,4 @@
 .bash_history
 .vscode
 .lesshst
+k8s-homelab-*.yaml

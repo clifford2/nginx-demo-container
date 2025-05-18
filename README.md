@@ -35,7 +35,7 @@ curl http://127.0.0.1:8083/index.csv
 podman stop nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
-An example Kubernetes manifest is also available in `k8s.yaml`.
+An example Kubernetes manifests are also available in `k8s-{version}.yaml`.
 
 ## License & Disclaimer
 
