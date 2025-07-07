@@ -2,9 +2,10 @@
 #
 # SPDX-License-Identifier: MIT-0
 
-ARG NGINX_VERSION=1.28.0
+ARG NGINX_VERSION=1.29.0
+ARG ALPINE_VERSION=3.22
 
-FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine3.21
+FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}
 
 LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
 LABEL org.opencontainers.image.source https://github.com/clifford2/nginx-demo-container
