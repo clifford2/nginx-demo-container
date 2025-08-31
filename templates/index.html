@@ -60,31 +60,35 @@ body {
 <body>
 <div id="content">
 <h1 class="ttl">Demo Container</h1>
-<p>A very simple demo container, running <a href="https://nginx.org/">Nginx</a> version <span class="highlight1">{NGINX_VERSION}</span> as an unprivileged user.</p>
+<p>A very simple demo container, running <a href="https://nginx.org/">Nginx</a> version {NGINX_VERSION} as an unprivileged user.</p>
 <hr>
-<p>Image information (<em>handy for CI/CD tests</em>):</p>
+<p>Image information (<em>handy for CI/CD & Rolling Update tests</em>):</p>
 <ul>
-<li>Image version: <span class="highlight1">{APP_VERSION}</span></li>
+<li>Version: <span class="highlight1">{APP_VERSION}</span></li>
 <li>Build time: <span class="highlight1">{BUILDTIME}</span></li>
 </ul>
 <p>Container information (<em>handy for load balancing tests</em>):</p>
 <ul>
 <li>Hostname: <span class="highlight2">{HOSTNAME}</span></li>
-<li>Container start time: <span class="highlight1">{CURRTIME}</span></li>
+<li>Start time: <span class="highlight1">{CURRTIME}</span></li>
 </ul>
 <hr>
-<p>Alternate file formats (<em>handy for automated processing</em>):</p>
+<p>Alternate output formats (<em>handy for automated processing</em>):</p>
 <ul>
 <li>JSON: <a href="index.json">index.json</a></li>
 <li>CSV: <a href="index.csv">index.csv</a> (CR/LF terminated)</li>
 <li>Plain text: <a href="index.txt">index.txt</a></li>
 </ul>
 <hr>
-<p><em>Source code: <a href="https://github.com/clifford2/nginx-demo-container">github.com/clifford2/nginx-demo-container</a></em></p>
+<p><em>Source code: <a href="https://github.com/clifford2/nginx-demo-container" target="_blank">github.com/clifford2/nginx-demo-container</a></em></p>
 <hr>
 <div id="wrapperbox">
-<div><code>$COLOR</code></div>
-<div id="colorbox"><code><span class="white">background-color: {COLOR}</span><br><span class="black">background-color: {COLOR}</span></code></div>
+<div>Container environment - <code>$COLOR</code></div>
+<div id="colorbox"><code>
+<span class="white">background-color: {COLOR}</span>
+<br>
+<span class="black">background-color: {COLOR}</span>
+</code></div>
 </div>
 </div>
 </body>
