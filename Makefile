@@ -195,4 +195,5 @@ git-tag-push: .git-tag .git-push
 .PHONY: check-depends
 check-depends: .check-test-deps .check-git-deps
 	@command -v podman || command -v docker
+	@command -v curl
 	@command -v trivy
