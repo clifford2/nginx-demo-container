@@ -28,6 +28,11 @@ ARG UID=101
 USER root
 RUN /sbin/apk add --no-cache curl
 
+# Add HTTP cache control headers
+RUN sed -i -e '/^}/i add_header Cache-Control "no-cache, no-store, must-revalidate";' /etc/nginx/conf.d/default.conf
+RUN sed -i -e '/^}/i add_header Expires 0;' /etc/nginx/conf.d/default.conf
+RUN sed -i -e '/^}/i add_header Pragma "no-cache";' /etc/nginx/conf.d/default.conf
+
 # Add our content
 COPY --chmod=0755 99-subst-on-index.sh /docker-entrypoint.d/99-subst-on-index.sh
 COPY --chmod=0644 templates/index.* .version /usr/share/nginx/html/
