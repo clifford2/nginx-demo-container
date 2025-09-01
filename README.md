@@ -23,22 +23,24 @@ An image built from this code is available at
 
 ## Using The Image
 
-You can run the image locally with:
-
-```sh
-podman run -d --rm -p 8081:8080 --name nginx-demo-red ghcr.io/clifford2/nginx-demo:1.3.2
-podman run -d --rm -p 8082:8080 --name nginx-demo-blue -e COLOR=blue ghcr.io/clifford2/nginx-demo:1.3.2
-podman run -d --rm -p 8083:8080 --name nginx-demo-green -e COLOR=green ghcr.io/clifford2/nginx-demo:1.3.2
-curl http://127.0.0.1:8081/index.json
-curl http://127.0.0.1:8082/index.txt
-curl http://127.0.0.1:8083/index.csv
-podman stop nginx-demo-red nginx-demo-blue nginx-demo-green
-```
-
-Example Kubernetes manifests are also available in `deploy/k8s-{version}.yaml`. Deploy with:
+Example Kubernetes manifests are available in `deploy/k8s-{version}.yaml`. Deploy with:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+```
+
+You can also run the image locally with commands like this:
+
+```sh
+podman run -d --rm -p 8081:8080 --name nginx-demo-nocolor                ghcr.io/clifford2/nginx-demo:1.3.2
+podman run -d --rm -p 8082:8080 --name nginx-demo-blue    -e COLOR=blue  ghcr.io/clifford2/nginx-demo:1.3.2
+podman run -d --rm -p 8083:8080 --name nginx-demo-green   -e COLOR=green ghcr.io/clifford2/nginx-demo:1.3.2
+podman run -d --rm -p 8084:8080 --name nginx-demo-red     -e COLOR=red   ghcr.io/clifford2/nginx-demo:1.3.2
+xdg-open http://127.0.0.1:8081/index.html
+curl http://127.0.0.1:8082/index.json
+curl http://127.0.0.1:8083/index.txt
+curl http://127.0.0.1:8084/index.csv
+podman stop nginx-demo-nocolor nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
 ## License & Disclaimer
