@@ -87,8 +87,6 @@ spec:
             - ALL
           seccompProfile:
             type: RuntimeDefault
-      securityContext:
-        fsGroup: 1234
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
@@ -184,8 +182,6 @@ spec:
             - ALL
           seccompProfile:
             type: RuntimeDefault
-      securityContext:
-        fsGroup: 1234
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
@@ -281,8 +277,6 @@ spec:
             - ALL
           seccompProfile:
             type: RuntimeDefault
-      securityContext:
-        fsGroup: 1234
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
