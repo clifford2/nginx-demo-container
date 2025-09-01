@@ -10,6 +10,6 @@
 .bash_history
 .vscode
 .lesshst
-images
+images/*.png
 LICENSES
 tests
