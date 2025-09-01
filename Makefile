@@ -3,9 +3,11 @@
 
 ### Config ###
 # Public image (REPOBASE := ghcr.io/clifford2) is built by GitHub Action
-# This is for my local registry
-REGISTRY := registry.h.c6d.xyz
-REPOBASE := $(REGISTRY)/clifford
+# Set REGISTRY value to login during "make push-release"
+# REGISTRY := registry.example.com
+# Set REPOBASE value to image base name (excluding "/$(IMGBASENAME):tag" suffix) for "make push-release"
+# REPOBASE := $(REGISTRY)/mynamespace
+REPOBASE := localhost
 IMGBASENAME := nginx-demo
 DEVTAG := dev
 DEVPORT := 8080
@@ -130,7 +132,7 @@ stop-release:
 
 .PHONY: push-release
 push-release: build-release
-	$(CONTAINER_ENGINE) login $(REGISTRY)
+	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest

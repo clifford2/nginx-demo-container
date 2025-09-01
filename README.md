@@ -14,8 +14,8 @@ It returns simple files which contain:
 This output is available in the following files / formats:
 
 - HTML: `index.html` (handy for human consumption)
-- JSON: `index.json` (handy for automated processing)
-- Plain text: `index.txt`
+- JSON: `index.json` (ideal for automated processing)
+- Plain text: `index.txt` (LF terminated)
 - Comma-separated values: `index.csv` (CR/LF terminated)
 
 An image built from this code is available at
@@ -35,7 +35,11 @@ curl http://127.0.0.1:8083/index.csv
 podman stop nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
-An example Kubernetes manifests are also available in `deploy/k8s-{version}.yaml`.
+Example Kubernetes manifests are also available in `deploy/k8s-{version}.yaml`. Deploy with:
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+```
 
 ## License & Disclaimer
 
