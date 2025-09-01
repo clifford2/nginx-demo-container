@@ -39,9 +39,9 @@ An example Kubernetes manifests are also available in `k8s-{version}.yaml`.
 
 ## License & Disclaimer
 
-This code is shared under the BSD 2-Clause "Simplified" License.
+This code is shared under the MIT No Attribution License.
 It is provided *AS IS*, without warranty of any kind.
-See [`LICENSES/BSD-2-Clause.txt`](LICENSES/BSD-2-Clause.txt) for the full license text and disclaimer.
+See [`LICENSES/MIT-0.txt`](LICENSES/MIT-0.txt) for the full license text and disclaimer.
 
 ## Security
 
@@ -53,7 +53,7 @@ Please report any problems or vulnerabilities by opening a [GitHub issue here](h
 
 ## Output Samples
 
-Here are some examples of the output from 1.2.4.
+Here are some output examples from v1.2.4.
 
 HTML:
 
