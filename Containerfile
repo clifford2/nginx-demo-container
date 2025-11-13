@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT-0
 
-ARG NGINX_VERSION=1.29.1
+ARG NGINX_VERSION=1.29.2
 ARG ALPINE_VERSION=3.22
 
 FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}
