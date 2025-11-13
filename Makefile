@@ -47,7 +47,7 @@ help:
 	@echo "  check-depends:  Verify that all external dependencies are available"
 	@echo "  build-dev:      Build development image ($(IMGDEVTAG))"
 	@echo "  test-dev:       Test the development image (Trivy, curl)"
-	@echo "  open-dev:       Open development container in browser"
+	@echo "  open-dev:       Run development container & open in browser"
 	@echo "  stop-dev:       Stop development container"
 	@echo "additional testing:"
 	@echo "  run-dev:        Run DEFAULT (no colour override) development container on port $(DEVPORT)"
@@ -81,6 +81,21 @@ get-imagename:
 build-dev:
 	$(BUILD_CMD) -t $(IMGDEVTAG) .
 
+.PHONY: .get-text-content
+.get-text-content:
+	@echo ""
+	@echo "JSON content:"
+	@echo ""
+	@curl --silent http://127.0.0.1:8080/index.json | jq ''
+	@echo ""
+	@echo "TXT content:"
+	@echo ""
+	@curl --silent http://127.0.0.1:8080/index.txt
+	@echo ""
+	@echo "CSV content:"
+	@echo ""
+	@curl --silent http://127.0.0.1:8080/index.csv
+
 .PHONY: run-dev
 run-dev:
 	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
@@ -88,17 +103,17 @@ run-dev:
 
 .PHONY: run-dev-blue
 run-dev-blue:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=blue $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#1F63E0' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-green
 run-dev-green:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=green $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#3BC639' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: run-dev-red
 run-dev-red:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR=red $(IMGDEVTAG)
+	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#B44B4C' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 .PHONY: stop-dev
@@ -114,7 +129,19 @@ test-dev: .check-test-deps build-dev
 	@make --quiet stop-dev
 
 .PHONY: open-dev
-open-dev: run-dev
+open-dev: run-dev .get-text-content
+	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null) || echo "Please open http://0.0.0.0:$(DEVPORT)/index.html manually in your browser"
+
+.PHONY: open-dev-blue
+open-dev-blue: run-dev-blue .get-text-content
+	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null) || echo "Please open http://0.0.0.0:$(DEVPORT)/index.html manually in your browser"
+
+.PHONY: open-dev-green
+open-dev-green: run-dev-green .get-text-content
+	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null) || echo "Please open http://0.0.0.0:$(DEVPORT)/index.html manually in your browser"
+
+.PHONY: open-dev-red
+open-dev-red: run-dev-red .get-text-content
 	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null) || echo "Please open http://0.0.0.0:$(DEVPORT)/index.html manually in your browser"
 
 .PHONY: build-release
@@ -200,3 +227,4 @@ check-depends: .check-test-deps .check-git-deps
 	@command -v curl
 	@command -v git
 	@command -v trivy
+	@command -v jq
