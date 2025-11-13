@@ -2,16 +2,17 @@
 
 ## About
 
-A very simple demo container image, running [Nginx](https://nginx.org/)
-as a non root, unprivileged user, on port 8080.
+This code builds a very simple demo container image, running
+[Nginx](https://nginx.org/) as a non root, unprivileged user,
+on port 8080.
 
-It returns simple files which contain:
+It returns simple content containing:
 
 - The image version/tag (handy for CI/CD tests & demos)
 - The image build time (handy for CI/CD tests & demos)
-- Container hostname & start time (handy for load balancing tests & demos)
+- Container hostname & start time (handy for load balancing & deployment rollout tests & demos)
 
-This output is available in the following files / formats:
+This output is available in the following formats:
 
 - HTML: `index.html` (handy for human consumption)
 - JSON: `index.json` (ideal for automated processing)
@@ -31,33 +32,33 @@ kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-containe
 
 You can also run the image locally with commands like this:
 
-```sh
-podman run -d --rm \
- -p 8081:8080 \
- --name nginx-demo-nocolor \
- ghcr.io/clifford2/nginx-demo:1.5.1
-podman run -d --rm \
- -p 8082:8080 \
- --name nginx-demo-blue \
- -e COLOR=blue \
- ghcr.io/clifford2/nginx-demo:1.5.1
-podman run -d --rm \
- -p 8083:8080 \
- --name nginx-demo-green \
- -e COLOR=green \
- ghcr.io/clifford2/nginx-demo:1.5.1
-podman run -d --rm \
- -p 8084:8080 \
- --name nginx-demo-red \
- -e COLOR=red \
- ghcr.io/clifford2/nginx-demo:1.5.1
+```shell
+$ podman run -d --rm \
+   -p 8081:8080 \
+   --name nginx-demo-nocolor \
+   ghcr.io/clifford2/nginx-demo:1.5.1
+$ podman run -d --rm \
+   -p 8082:8080 \
+   --name nginx-demo-blue \
+   -e COLOR=blue \
+   ghcr.io/clifford2/nginx-demo:1.5.1
+$ podman run -d --rm \
+   -p 8083:8080 \
+   --name nginx-demo-green \
+   -e COLOR=green \
+   ghcr.io/clifford2/nginx-demo:1.5.1
+$ podman run -d --rm \
+   -p 8084:8080 \
+   --name nginx-demo-red \
+   -e COLOR=red \
+   ghcr.io/clifford2/nginx-demo:1.5.1
 
-xdg-open http://127.0.0.1:8081/index.html
-curl http://127.0.0.1:8082/index.json
-curl http://127.0.0.1:8083/index.txt
-curl http://127.0.0.1:8084/index.csv
+$ xdg-open http://127.0.0.1:8081/index.html
+$ curl http://127.0.0.1:8082/index.json
+$ curl http://127.0.0.1:8083/index.txt
+$ curl http://127.0.0.1:8084/index.csv
 
-podman stop nginx-demo-nocolor nginx-demo-red nginx-demo-blue nginx-demo-green
+$ podman stop nginx-demo-nocolor nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
 ## License & Disclaimer
@@ -84,12 +85,35 @@ HTML:
 
 JSON:
 
-![JSON](images/sample-json.png "JSON")
+```json
+{
+  "nginx_version": "1.29.2",
+  "image_version": "1.5.1",
+  "build_time": "2025-11-13T13:22:22Z",
+  "container_hostname": "330e9917d50f",
+  "start_time": "2025-11-13T13:37:39Z",
+  "color": "#1F63E0"
+}
+```
 
 CSV:
 
-![CSV](images/sample-csv.png "CSV")
+```csv
+"nginx_version","1.29.2"
+"image_version","1.5.1"
+"build_time","2025-11-13T13:22:22Z"
+"container_hostname","330e9917d50f"
+"start_time","2025-11-13T13:37:39Z"
+"color","#1F63E0"
+```
 
 Plain text:
 
-![TXT](images/sample-txt.png "TXT")
+```text
+nginx_version:1.29.2
+image_version:1.5.1
+build_time:2025-11-13T13:22:22Z
+container_hostname:330e9917d50f
+start_time:2025-11-13T13:37:39Z
+color:#1F63E0
+```
