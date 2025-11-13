@@ -9,7 +9,11 @@
 ver=$(cat .version)
 sed -i -e "s| ghcr.io/clifford2/nginx-demo.*$| ghcr.io/clifford2/nginx-demo:${ver}|" README.md
 sed -i -e "s|version: .*$|version: ${ver}|" -e "s|image: .*$|image: ghcr.io/clifford2/nginx-demo:${ver}|" deploy/k8s-latest.yaml
-test -f deploy/k8s-${ver}.yaml || cp deploy/k8s-latest.yaml deploy/k8s-${ver}.yaml
+if [ ! -f deploy/k8s-${ver}.yaml ]
+then
+	cp deploy/k8s-latest.yaml deploy/k8s-${ver}.yaml
+	git add deploy/k8s-${ver}.yaml
+fi
 if [ -f deploy/k8s-homelab-latest.yaml ]
 then
 	sed -i -e "s|version: .*$|version: ${ver}|" -e "s|image: .*$|image: ghcr.io/clifford2/nginx-demo:${ver}|" deploy/k8s-homelab-latest.yaml

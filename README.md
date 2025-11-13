@@ -11,6 +11,7 @@ It returns simple content containing:
 - The image version/tag (handy for CI/CD tests & demos)
 - The image build time (handy for CI/CD tests & demos)
 - Container hostname & start time (handy for load balancing & deployment rollout tests & demos)
+- The value of an optional `$COLOR` environment variable (handy visual aid for load balancing tests & demos)
 
 This output is available in the following formats:
 
@@ -36,22 +37,22 @@ You can also run the image locally with commands like this:
 $ podman run -d --rm \
    -p 8081:8080 \
    --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.5.1
+   ghcr.io/clifford2/nginx-demo:1.6.1
 $ podman run -d --rm \
    -p 8082:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.5.1
+   ghcr.io/clifford2/nginx-demo:1.6.1
 $ podman run -d --rm \
    -p 8083:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.5.1
+   ghcr.io/clifford2/nginx-demo:1.6.1
 $ podman run -d --rm \
    -p 8084:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.5.1
+   ghcr.io/clifford2/nginx-demo:1.6.1
 
 $ xdg-open http://127.0.0.1:8081/index.html
 $ curl http://127.0.0.1:8082/index.json
@@ -77,7 +78,7 @@ Please report any problems or vulnerabilities by opening a [GitHub issue here](h
 
 ## Output Samples
 
-Here are some output examples from v1.2.4.
+Here are some output examples from v1.5.1.
 
 HTML:
 
@@ -87,33 +88,33 @@ JSON:
 
 ```json
 {
-  "nginx_version": "1.29.2",
   "image_version": "1.5.1",
   "build_time": "2025-11-13T13:22:22Z",
   "container_hostname": "330e9917d50f",
   "start_time": "2025-11-13T13:37:39Z",
-  "color": "#1F63E0"
+  "color": "#1F63E0",
+  "nginx_version": "1.29.2"
 }
 ```
 
 CSV:
 
 ```csv
-"nginx_version","1.29.2"
 "image_version","1.5.1"
 "build_time","2025-11-13T13:22:22Z"
 "container_hostname","330e9917d50f"
 "start_time","2025-11-13T13:37:39Z"
 "color","#1F63E0"
+"nginx_version","1.29.2"
 ```
 
 Plain text:
 
 ```text
-nginx_version:1.29.2
 image_version:1.5.1
 build_time:2025-11-13T13:22:22Z
 container_hostname:330e9917d50f
 start_time:2025-11-13T13:37:39Z
 color:#1F63E0
+nginx_version:1.29.2
 ```
