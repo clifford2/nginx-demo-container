@@ -50,7 +50,7 @@ jobs:
       # allows the output of this step to be referenced in a subsequent step. The `images` value
       # provides the base name for the tags and labels.
       # - name: "Extract metadata (tags, labels) for Docker"
-      #   id: meta
+      #   id: "meta"
       #   uses: docker/metadata-action@v5
       #   with:
       #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -71,7 +71,7 @@ jobs:
       # It uses the `tags` and `labels` parameters to tag and label the image
       # with the output from the "meta" step.
       # - name: Build and push Docker image
-      #   id: push
+      #   id: "push"
       #   uses: docker/build-push-action@v6
       #   with:
       #     context: .
@@ -81,8 +81,14 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
 
       - name: "Build & push container image"
+        id: "build"
         run: |
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push-release
+
+      - name: "Build & push container image"
+        id: "inspect"
+        run: |
+          make get-release-image-digest
 
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
@@ -93,5 +99,6 @@ jobs:
         uses: "actions/attest-build-provenance@v2"
         with:
           subject-name: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}"
-          subject-digest: "${{ steps.push.outputs.digest }}"
+          # subject-digest: "${{ steps.push.outputs.digest }}"
+          subject-digest: "${{ steps.inspect.outputs.out }}"
           push-to-registry: true

@@ -33,10 +33,12 @@ ifeq ($(CONTAINER_ENGINE),podman)
 	BUILDARCH := $(shell podman version --format '{{.Client.OsArch}}' | cut -d/ -f2)
 	BUILD_NOLOAD := podman build --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD)
+	DIGEST_CMD := podman inspect --format "{{.Digest}}"
 else
 	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
 	BUILD_NOLOAD := docker buildx build -f Containerfile --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD) --load
+	DIGEST_CMD := docker inspect --format "{{.Id}}"
 endif
 
 .PHONY: help
@@ -184,6 +186,14 @@ lint: .check-lint-depends
 .PHONY: get-version
 get-version:
 	@echo "$(APP_VERSION)"
+
+.PHONY: get-dev-image-digest
+get-dev-image-digest:
+	@$(DIGEST_CMD) $(IMGDEVTAG)
+
+.PHONY: get-release-image-digest
+get-release-image-digest:
+	@$(DIGEST_CMD) $(IMGRELTAG)
 
 .PHONY: bump-version-major
 bump-version-major: .check-ver-deps
