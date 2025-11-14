@@ -4,20 +4,20 @@
 
 # OpenShift Route
 ---
-kind: Route
-apiVersion: route.openshift.io/v1
+kind: "Route"
+apiVersion: "route.openshift.io/v1"
 metadata:
-  name: nginx-demo
+  name: "nginx-demo"
   annotations:
     # These 2 annotations disable sticky sessions
-    haproxy.router.openshift.io/balance: 'roundrobin'
-    haproxy.router.openshift.io/disable_cookies: 'true'
+    haproxy.router.openshift.io/balance: "roundrobin"
+    haproxy.router.openshift.io/disable_cookies: "true"
 spec:
-  path: /
+  path: "/"
   to:
-    kind: Service
-    name: nginx-demo
+    kind: "Service"
+    name: "nginx-demo"
     weight: 100
   port:
-    targetPort: http
-  wildcardPolicy: None
+    targetPort: "http"
+  wildcardPolicy: "None"
