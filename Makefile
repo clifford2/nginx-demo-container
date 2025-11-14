@@ -59,6 +59,7 @@ help:
 	@echo ""
 	@echo "Release targets:"
 	@echo ""
+	@echo "  lint:           Check for YAML syntax errors"
 	@echo "  bump-version-{major,minor,patch}: Increment version"
 	@echo "  # git commit -a"
 	@echo "  git-tag-push:   Tag git repo with current version & push"
@@ -174,6 +175,12 @@ push-release: build-release
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
 
+.PHONY: lint
+lint: .check-lint-depends
+	@yamllint .github/workflows/build-image.yaml
+	@yamllint deploy/k8s-latest.yaml
+	@yamllint deploy/openshift-route.yaml
+
 .PHONY: get-version
 get-version:
 	@echo "$(APP_VERSION)"
@@ -194,7 +201,7 @@ bump-version-patch: .check-ver-deps
 	@bash ./build/fix-doc-version.sh
 
 .PHONY: .git-tag
-.git-tag: .check-git-deps
+.git-tag: .check-git-deps lint
 	@git tag -m "Version $(APP_VERSION)" $(APP_VERSION)
 
 .PHONY: .git-push
@@ -229,6 +236,10 @@ git-tag-push: .git-tag .git-push
 	@command -v awk
 	@command -v curl
 	@command -v jq
+
+.PHONY: .check-lint-depends
+.check-lint-depends:
+	@command -v yamllint
 
 # Verify that we have all required dependencies installed
 .PHONY: check-depends
