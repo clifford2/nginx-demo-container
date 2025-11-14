@@ -35,7 +35,7 @@ ifeq ($(CONTAINER_ENGINE),podman)
 	BUILD_CMD := $(BUILD_NOLOAD)
 else
 	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
-	BUILD_NOLOAD := docker buildx build --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
+	BUILD_NOLOAD := docker buildx build -f Containerfile --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD) --load
 endif
 
@@ -165,6 +165,12 @@ stop-release:
 push-release: build-release
 	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
+	# tag with major.minor version
+	$(CONTAINER_ENGINE) push $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
+	# tag with major version
+	$(CONTAINER_ENGINE) push $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
 	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
 
