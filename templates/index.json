@@ -1,1 +1,19 @@
-{"image_version":"{APP_VERSION}","build_time":"{BUILDTIME}","container_hostname":"{HOSTNAME}","start_time":"{CURRTIME}","color":"{COLOR}","nginx_version":"{NGINX_VERSION}"}
+{
+  "image_version": "{APP_VERSION}",
+  "build_time": "{BUILD_TIME}",
+  "container_hostname": "{HOSTNAME}",
+  "start_time": "{CURRTIME}",
+  "color": "{COLOR}",
+  "nginx_version": "{NGINX_VERSION}",
+  "opencontainers_annotations": {
+    "org.opencontainers.image.authors": "Clifford Weinmann <https://www.cliffordweinmann.com/>",
+    "org.opencontainers.image.created": "{BUILD_TIME}",
+    "org.opencontainers.image.description": "NGINX Demo",
+    "org.opencontainers.image.licenses": "MIT-0",
+    "org.opencontainers.image.revision": "{GIT_REVISION}",
+    "org.opencontainers.image.source": "https://github.com/clifford2/nginx-demo-container",
+    "org.opencontainers.image.title": "nginx-demo-container",
+    "org.opencontainers.image.url": "https://github.com/clifford2/nginx-demo-container",
+    "org.opencontainers.image.version": "{APP_VERSION}"
+  }
+}

@@ -3,7 +3,7 @@
 ## About
 
 This code builds a very simple demo container image, running
-[Nginx](https://nginx.org/) as a non root, unprivileged user,
+[nginx](https://nginx.org/) as a non root, unprivileged user,
 on port 8080.
 
 It returns simple content containing:
@@ -25,7 +25,9 @@ An image built from this code is available at
 
 ## Using The Image
 
-Example Kubernetes manifests are available in `deploy/k8s-{version}.yaml`. Deploy with:
+Example Kubernetes manifests are available in `deploy/k8s-{version}.yaml`.
+The latest version is also available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml).
+Deploy with:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
@@ -37,22 +39,22 @@ You can also run the image locally with commands like this:
 $ podman run -d --rm \
    -p 8081:8080 \
    --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.6.1
+   ghcr.io/clifford2/nginx-demo:1.7.0
 $ podman run -d --rm \
    -p 8082:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.6.1
+   ghcr.io/clifford2/nginx-demo:1.7.0
 $ podman run -d --rm \
    -p 8083:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.6.1
+   ghcr.io/clifford2/nginx-demo:1.7.0
 $ podman run -d --rm \
    -p 8084:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.6.1
+   ghcr.io/clifford2/nginx-demo:1.7.0
 
 $ xdg-open http://127.0.0.1:8081/index.html
 $ curl http://127.0.0.1:8082/index.json

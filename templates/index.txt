@@ -1,5 +1,5 @@
 image_version:{APP_VERSION}
-build_time:{BUILDTIME}
+build_time:{BUILD_TIME}
 container_hostname:{HOSTNAME}
 start_time:{CURRTIME}
 color:{COLOR}

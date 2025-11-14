@@ -14,6 +14,8 @@ DEVPORT := 8080
 
 # Get current version (used in image tags and when bumping version numbers)
 APP_VERSION := $(shell cat .version 2>/dev/null || echo '0.0.0-new')
+BUILD_TIME := $(shell TZ=UTC date '+%Y-%m-%dT%H:%M:%SZ')
+GIT_REVISION := $(shell git rev-parse @)
 
 # Construct image names
 IMGBASETAG := $(REPOBASE)/$(IMGBASENAME)
@@ -29,11 +31,11 @@ endif
 
 ifeq ($(CONTAINER_ENGINE),podman)
 	BUILDARCH := $(shell podman version --format '{{.Client.OsArch}}' | cut -d/ -f2)
-	BUILD_NOLOAD := podman build
+	BUILD_NOLOAD := podman build --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD)
 else
 	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
-	BUILD_NOLOAD := docker buildx build
+	BUILD_NOLOAD := docker buildx build --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD) --load
 endif
 
@@ -88,15 +90,15 @@ build-dev:
 	@echo ""
 	@echo "JSON content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.json | jq ''
+	@curl --silent http://127.0.0.1:8080/index.json | jq '' || true
 	@echo ""
 	@echo "TXT content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.txt
+	@curl --silent http://127.0.0.1:8080/index.txt || true
 	@echo ""
 	@echo "CSV content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.csv
+	@curl --silent http://127.0.0.1:8080/index.csv || true
 
 .PHONY: run-dev
 run-dev:

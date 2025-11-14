@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Oops</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Demo Container Error</h1>
+<p>If you see this page, the nginx demo container has successfully started,
+<em>but is not working as designed</em>. Further configuration is required.</p>
+
+<p>The most likely cause of this is if the <code>/usr/share/nginx/html</code>
+directory is not writable, which can happen if you run the container in
+Kubernetes with a <code>readOnlyRootFilesystem</code>, but did not mount
+a volume for <code>/usr/share/nginx/html</code> which is writable by UID {NGINX_UID}.</p>
+
+<p>Please see <a href="https://github.com/clifford2/nginx-demo-container/blob/main/deploy/k8s-latest.yaml">github.com/clifford2/nginx-demo-container/blob/main/deploy/k8s-latest.yaml</a> for an example Kubernetes deployment manifest that addresses this.
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
