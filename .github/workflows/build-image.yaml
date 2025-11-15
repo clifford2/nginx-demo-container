@@ -98,6 +98,7 @@ jobs:
         id: "inspect"
         run: |
           imagedigest="$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)"
+          echo "imagedigest=${imagedigest}"
           echo "imagedigest=${imagedigest}" >> $GITHUB_ENV
 
       # This step generates an artifact attestation for the image, which is an
@@ -110,5 +111,5 @@ jobs:
         with:
           subject-name: "${{ env.IMGBASETAG }}"
           # subject-digest: "${{ steps.push.outputs.digest }}"
-          subject-digest: "${imagedigest}"
+          subject-digest: "${{ env.imagedigest }}"
           push-to-registry: true
