@@ -2,16 +2,17 @@
 
 ## About
 
-This code builds a very simple demo container image, running
-[nginx](https://nginx.org/) as a non root, unprivileged user,
-on port 8080.
+This code builds a very simple web server container image, which is
+handy for Continuous Deployment (CD) and load balancing tests & demos.
+It is running [nginx](https://nginx.org/) as a non root, unprivileged
+user, on port 8080.
 
 It returns simple content containing:
 
-- The image version/tag (handy for CI/CD tests & demos)
-- The image build time (handy for CI/CD tests & demos)
+- The image version/tag (handy for CD tests & demos)
+- The image build time (handy for CD tests & demos)
 - Container hostname & start time (handy for load balancing & deployment rollout tests & demos)
-- The value of an optional `$COLOR` environment variable (handy visual aid for load balancing tests & demos)
+- A coloured box, controlled by the optional `$COLOR` environment variable (handy visual aid for load balancing tests & demos)
 
 This output is available in the following formats:
 
@@ -25,7 +26,7 @@ An image built from this code is available at
 
 ## Using The Image
 
-Example Kubernetes manifests are available in `deploy/k8s-{version}.yaml`.
+Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
 The latest version is also available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml).
 Deploy with:
 
@@ -80,7 +81,7 @@ Please report any problems or vulnerabilities by opening a [GitHub issue here](h
 
 ## Output Samples
 
-Here are some output examples from v1.5.1.
+Here are some output examples from November 2025 (different code releases).
 
 HTML:
 
@@ -90,12 +91,23 @@ JSON:
 
 ```json
 {
-  "image_version": "1.5.1",
-  "build_time": "2025-11-13T13:22:22Z",
-  "container_hostname": "330e9917d50f",
-  "start_time": "2025-11-13T13:37:39Z",
-  "color": "#1F63E0",
-  "nginx_version": "1.29.2"
+  "image_version": "1.7.11",
+  "build_time": "2025-11-15T05:58:19Z",
+  "container_hostname": "eeb54793d9e6",
+  "start_time": "2025-11-15T06:09:01Z",
+  "color": "#333",
+  "nginx_version": "1.29.2",
+  "opencontainers_annotations": {
+    "org.opencontainers.image.authors": "Clifford Weinmann <https://www.cliffordweinmann.com/>",
+    "org.opencontainers.image.created": "2025-11-15T05:58:19Z",
+    "org.opencontainers.image.description": "NGINX Demo",
+    "org.opencontainers.image.licenses": "MIT-0",
+    "org.opencontainers.image.revision": "9243706706f0b74a5aa6f33d94f1848fc205d3f2",
+    "org.opencontainers.image.source": "https://github.com/clifford2/nginx-demo-container",
+    "org.opencontainers.image.title": "nginx-demo-container",
+    "org.opencontainers.image.url": "https://github.com/clifford2/nginx-demo-container",
+    "org.opencontainers.image.version": "1.7.11"
+  }
 }
 ```
 
@@ -107,16 +119,15 @@ CSV:
 "container_hostname","330e9917d50f"
 "start_time","2025-11-13T13:37:39Z"
 "color","#1F63E0"
-"nginx_version","1.29.2"
 ```
 
 Plain text:
 
 ```text
-image_version:1.5.1
-build_time:2025-11-13T13:22:22Z
-container_hostname:330e9917d50f
-start_time:2025-11-13T13:37:39Z
-color:#1F63E0
+image_version:1.7.11
+build_time:2025-11-15T05:58:19Z
+container_hostname:eeb54793d9e6
+start_time:2025-11-15T06:09:01Z
+color:#333
 nginx_version:1.29.2
 ```
