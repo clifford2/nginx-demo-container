@@ -23,9 +23,10 @@ name: "Create and publish a container image"
 # These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: "ghcr.io"
-  REPOBASE: "${{ env.REGISTRY }}/${{ github.repository_owner }}" # "ghcr.io/clifford2"
-  IMGBASENAME: "nginx-demo"
-  IMGBASETAG: "$(( env.REPOBASE ))/$(( env.IMGBASENAME ))"
+  # REPOBASE: "ghcr.io/clifford2"
+  # REPOBASE: "${{ env.REGISTRY }}/${{ github.repository_owner }}"
+  REPOBASE: "ghcr.io/${{ github.repository_owner }}"
+  IMGBASETAG: "ghcr.io/${{ github.repository_owner }}/nginx-demo"
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -96,7 +97,8 @@ jobs:
       - name: "Get container image digest"
         id: "inspect"
         run: |
-          echo "imagedigest=$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)" >> $GITHUB_ENV
+          imagedigest="$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)"
+          echo "imagedigest=${imagedigest}" >> $GITHUB_ENV
 
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
