@@ -15,6 +15,7 @@ Update version, commit, and push to GitHub (triggers GitHub Action to
 build public image):
 
 ```sh
+make lint
 make bump-version-{major,minor,patch}
 git add . && git commit
 make git-tag-push

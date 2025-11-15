@@ -37,8 +37,8 @@ RUN sed -i -e '/^}/i etag off;' /etc/nginx/conf.d/default.conf
 RUN echo 'Initializing templates' && \
 	umask 022 && \
 	mkdir -p /usr/share/nginx/html-template
-COPY --chmod=0644 templates/index.* images/favicon.ico /usr/share/nginx/html-template/
-COPY --chmod=0644 templates/default-index.html /usr/share/nginx/html/index.html
+COPY --chmod=0644 build/templates/index.* images/favicon.ico /usr/share/nginx/html-template/
+COPY --chmod=0644 build/templates/default-index.html /usr/share/nginx/html/index.html
 RUN sed -i -e "s/{NGINX_UID}/${NGINX_UID}/" /usr/share/nginx/html/index.html
 
 # Insert image build details (version & timestamp) into web pages.
@@ -100,7 +100,7 @@ RUN echo 'Initializing templates' && \
 	mkdir -p /usr/share/nginx/html-template && \
 	cp -p /usr/share/nginx/html/50x.html /usr/share/nginx/html-template/50x.html && \
 	chown -R ${NGINX_UID}:${NGINX_UID} /usr/share/nginx/html
-COPY --chmod=0755 99-subst-on-index.sh /docker-entrypoint.d/99-subst-on-index.sh
+COPY --chmod=0755 build/templates/99-subst-on-index.sh /docker-entrypoint.d/99-subst-on-index.sh
 COPY --from=templates --chmod=0644 --chown=${NGINX_UID}:${NGINX_UID} /usr/share/nginx/html/index.html /usr/share/nginx/html/index.html
 COPY --from=templates --chmod=0644 /usr/share/nginx/html-template/ /usr/share/nginx/html-template/
 
