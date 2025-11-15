@@ -7,7 +7,7 @@
 # Set REPOBASE value to image base name (excluding "/$(IMGBASENAME):tag" suffix) for "make push-release"
 # REPOBASE := $(REGISTRY)/mynamespace
 # Public image (REPOBASE := ghcr.io/clifford2) is built by GitHub Action
-REPOBASE := localhost
+REPOBASE := ghcr.io/clifford2
 IMGBASENAME := nginx-demo
 DEVTAG := dev
 DEVPORT := 8080
@@ -18,10 +18,9 @@ BUILD_TIME := $(shell TZ=UTC date '+%Y-%m-%dT%H:%M:%SZ')
 GIT_REVISION := $(shell git rev-parse @)
 
 # Construct image names
-IMGBASETAG := $(REPOBASE)/$(IMGBASENAME)
-# IMGDEVTAG := $(IMGBASETAG):$(DEVTAG)
-IMGDEVTAG := $(IMGBASENAME):$(DEVTAG)
-IMGRELTAG := $(IMGBASETAG):$(APP_VERSION)
+IMGDEVTAG := localhost/$(IMGBASENAME):$(DEVTAG)
+IMGRELNAME := $(REPOBASE)/$(IMGBASENAME)
+IMGRELTAG := $(IMGRELNAME):$(APP_VERSION)
 
 # Use podman or docker?
 ifeq ($(shell command -v podman 2> /dev/null),)
@@ -76,18 +75,24 @@ help:
 	@echo "  stop-release:   Stop release container"
 	@echo ""
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
-	@echo "Would build version $(APP_VERSION) as image $(IMGRELTAG)"
+	@echo "Would build version $(APP_VERSION)"
+	@echo "DEV image: $(IMGDEVTAG)"
+	@echo "RELEASE image: $(IMGRELTAG)"
 
 # Show app version
 .PHONY: get-version
 get-version:
 	@echo "$(APP_VERSION)"
 
-# Show calculated image name
-# make REPOBASE=ghcr.io/clifford2 get-imagename
-.PHONY: get-imagename
-get-imagename:
+# Show calculated DEV image name
+.PHONY: get-dev-image-name
+get-dev-image-name:
 	@echo "$(IMGRELTAG)"
+
+# Show calculated RELEASE image name
+.PHONY: get-release-image-name
+get-release-image-name:
+	@echo "$(IMGDEVTAG)"
 
 # Get sha256 digest for latest DEV image
 .PHONY: get-dev-image-digest
@@ -180,10 +185,14 @@ open-dev-red: run-dev-red .get-text-content
 build-release:
 	$(BUILD_CMD) -t $(IMGRELTAG) .
 
+# Pull RELEASE image from GHCR
+.PHONY: pull-release
+pull-release:
+	$(CONTAINER_ENGINE) pull $(IMGRELTAG)
+
 # Start RELEASE container
 .PHONY: run-release
-run-release:
-	$(CONTAINER_ENGINE) pull $(IMGRELTAG)
+run-release: pull-release
 	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
@@ -197,14 +206,14 @@ stop-release:
 push-release: build-release
 	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
-	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
 	# tag with major.minor version
-	$(CONTAINER_ENGINE) push $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
-	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
 	# tag with major version
-	$(CONTAINER_ENGINE) push $(IMGBASETAG):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
-	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGBASETAG):latest
-	$(CONTAINER_ENGINE) push $(IMGBASETAG):latest
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1)
+	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):latest
+	$(CONTAINER_ENGINE) push $(IMGRELNAME):latest
 
 # Syntax check source code
 .PHONY: lint

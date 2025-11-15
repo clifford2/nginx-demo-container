@@ -13,18 +13,12 @@ name: "Create and publish container image"
       - "*"  # Push events to every tag not containing /
   workflow_dispatch:
 
-
-# fixme - Makefile vars - clean up
-# Construct image names
-# IMGDEVTAG := $(IMGBASETAG):$(DEVTAG)
-# IMGRELTAG := $(IMGBASETAG):$(APP_VERSION)
-
-# Defines two custom environment variables for the workflow.
-# These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
+# Defines custom environment variables for the workflow.
+# These are used for the Container registry domain, and a name for the
+# container image that this workflow builds.
 env:
   REGISTRY: "ghcr.io"
   REPOBASE: "ghcr.io/${{ github.repository_owner }}"
-  IMGBASETAG: "ghcr.io/${{ github.repository_owner }}/nginx-demo"
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
