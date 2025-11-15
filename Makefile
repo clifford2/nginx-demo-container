@@ -158,7 +158,7 @@ stop-dev:
 
 # Run tests against DEV image
 .PHONY: test-dev
-test-dev: .check-test-deps build-dev
+test-dev: .check-test-deps
 	@make --quiet run-dev
 	@bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	@make --quiet stop-dev
