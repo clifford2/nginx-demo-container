@@ -93,10 +93,6 @@ jobs:
         id: "build"
         run: |
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push-release
-
-      - name: "Get container image digest"
-        id: "inspect"
-        run: |
           imagedigest="$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)"
           echo "imagedigest=${imagedigest}"
           echo "imagedigest=${imagedigest}" >> $GITHUB_ENV

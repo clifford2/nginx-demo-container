@@ -191,6 +191,7 @@ get-version:
 get-dev-image-digest:
 	@$(DIGEST_CMD) $(IMGDEVTAG)
 
+# Get sha256 digest for latest release image
 .PHONY: get-release-image-digest
 get-release-image-digest:
 	@$(DIGEST_CMD) $(IMGRELTAG)
