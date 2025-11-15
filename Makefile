@@ -34,11 +34,13 @@ ifeq ($(CONTAINER_ENGINE),podman)
 	BUILD_NOLOAD := podman build --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD)
 	DIGEST_CMD := podman inspect --format "{{.Digest}}"
+	RUN_CMD := podman run --replace
 else
 	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
 	BUILD_NOLOAD := docker buildx build -f Containerfile --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
 	BUILD_CMD := $(BUILD_NOLOAD) --load
 	DIGEST_CMD := docker inspect --format "{{.Id}}"
+	RUN_CMD := docker run
 endif
 
 # Default target: show typical targets
@@ -128,25 +130,25 @@ build-dev:
 # Run DEV instance with default colour
 .PHONY: run-dev
 run-dev:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with blue-ish colour
 .PHONY: run-dev-blue
 run-dev-blue:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#1F63E0' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#1F63E0' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with green-ish colour
 .PHONY: run-dev-green
 run-dev-green:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#3BC639' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#3BC639' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with green-ish colour
 .PHONY: run-dev-red
 run-dev-red:
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#B44B4C' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#B44B4C' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Stop DEV container
@@ -157,11 +159,11 @@ stop-dev:
 # Run tests against DEV image
 .PHONY: test-dev
 test-dev: .check-test-deps build-dev
+	@make --quiet run-dev
+	@bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
+	@make --quiet stop-dev
 	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
 	@command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
-	@make --quiet run-dev
-	@bash ./build/test.sh
-	@make --quiet stop-dev
 
 # Start DEV instance & show results
 .PHONY: open-dev
@@ -193,7 +195,7 @@ pull-release:
 # Start RELEASE container
 .PHONY: run-release
 run-release: pull-release
-	$(CONTAINER_ENGINE) run --replace --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
+	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Stop RELEASE container
@@ -204,11 +206,11 @@ stop-release:
 # Run tests against RELEASE image
 .PHONY: test-release
 test-release: .check-test-deps
-	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
-	@command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
-	@make --quiet run-release
-	@bash ./build/test.sh
-	@make --quiet stop-release
+	make --quiet run-release
+	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
+	make --quiet stop-release
+	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
+	command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
 
 # Build & push RELEASE image
 .PHONY: push-release
