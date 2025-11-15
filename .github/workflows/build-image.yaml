@@ -11,19 +11,27 @@ name: "Create and publish a container image"
     # Pattern matched against refs/tags
     tags:
       - "*"  # Push events to every tag not containing /
+  workflow_dispatch:
+
+
+# fixme - Makefile vars - clean up
+# Construct image names
+# IMGDEVTAG := $(IMGBASETAG):$(DEVTAG)
+# IMGRELTAG := $(IMGBASETAG):$(APP_VERSION)
 
 # Defines two custom environment variables for the workflow.
 # These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: "ghcr.io"
-  # IMAGE_NAME: "${{ github.repository }}"
-  IMAGE_NAME: "clifford2/nginx-demo"
-  REPOBASE: "ghcr.io/clifford2"
+  REPOBASE: "${{ env.REGISTRY }}/${{ github.repository_owner }}" # "ghcr.io/clifford2"
+  IMGBASENAME: "nginx-demo"
+  IMGBASETAG: "$(( env.REPOBASE ))/$(( env.IMGBASENAME ))"
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
   build-and-push-image:
     runs-on: "ubuntu-24.04"
+
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: "read"
@@ -53,7 +61,7 @@ jobs:
       #   id: "meta"
       #   uses: docker/metadata-action@v5
       #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      #     images: ${{ env.IMGBASETAG }}
       #     tags: |
       #       type=ref,event=branch
       #       type=ref,event=pr
@@ -88,7 +96,7 @@ jobs:
       - name: "Get container image digest"
         id: "inspect"
         run: |
-          echo "digest:'$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)'" >> $GITHUB_OUTPUT
+          echo "imagedigest=$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)" >> $GITHUB_ENV
 
       # This step generates an artifact attestation for the image, which is an
       # unforgeable statement about where and how it was built. It increases
@@ -98,7 +106,7 @@ jobs:
       - name: "Generate artifact attestation"
         uses: "actions/attest-build-provenance@v2"
         with:
-          subject-name: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}"
+          subject-name: "${{ env.IMGBASETAG }}"
           # subject-digest: "${{ steps.push.outputs.digest }}"
-          subject-digest: "${{ steps.inspect.outputs.digest }}"
+          subject-digest: "${imagedigest}"
           push-to-registry: true

@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: MIT-0
 
 ### Config ###
-# Public image (REPOBASE := ghcr.io/clifford2) is built by GitHub Action
 # Set REGISTRY value to login during "make push-release"
 # REGISTRY := registry.example.com
 # Set REPOBASE value to image base name (excluding "/$(IMGBASENAME):tag" suffix) for "make push-release"
 # REPOBASE := $(REGISTRY)/mynamespace
+# Public image (REPOBASE := ghcr.io/clifford2) is built by GitHub Action
 REPOBASE := localhost
 IMGBASENAME := nginx-demo
 DEVTAG := dev
