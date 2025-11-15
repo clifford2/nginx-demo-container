@@ -201,9 +201,18 @@ run-release: pull-release
 stop-release:
 	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
 
+# Run tests against RELEASE image
+.PHONY: test-release
+test-release: .check-test-deps
+	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
+	@command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
+	@make --quiet run-release
+	@bash ./build/test.sh
+	@make --quiet stop-release
+
 # Build & push RELEASE image
 .PHONY: push-release
-push-release: build-release
+push-release:
 	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
