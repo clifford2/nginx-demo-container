@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 
-name: "Create and publish a container image"
+name: "Create and publish container image"
 
 "on":
   push:
@@ -23,8 +23,6 @@ name: "Create and publish a container image"
 # These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: "ghcr.io"
-  # REPOBASE: "ghcr.io/clifford2"
-  # REPOBASE: "${{ env.REGISTRY }}/${{ github.repository_owner }}"
   REPOBASE: "ghcr.io/${{ github.repository_owner }}"
   IMGBASETAG: "ghcr.io/${{ github.repository_owner }}/nginx-demo"
 
@@ -54,58 +52,10 @@ jobs:
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
 
-      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about)
-      # to extract tags and labels that will be applied to the specified image. The `id` "meta"
-      # allows the output of this step to be referenced in a subsequent step. The `images` value
-      # provides the base name for the tags and labels.
-      # - name: "Extract metadata (tags, labels) for Docker"
-      #   id: "meta"
-      #   uses: docker/metadata-action@v5
-      #   with:
-      #     images: ${{ env.IMGBASETAG }}
-      #     tags: |
-      #       type=ref,event=branch
-      #       type=ref,event=pr
-      #       type=semver,pattern={{version}}
-      #       type=semver,pattern={{major}}.{{minor}}
-      #       type=semver,pattern={{major}}
-
-      # This step uses the `docker/build-push-action` action to build the image,
-      # based on your repository's `Dockerfile`. If the build succeeds, it
-      # pushes the image to GitHub Packages.
-      # It uses the `context` parameter to define the build's context as the set
-      # of files located in the specified path. For more information, see
-      # [Usage](https://github.com/docker/build-push-action#usage) in the
-      # README of the `docker/build-push-action` repository.
-      # It uses the `tags` and `labels` parameters to tag and label the image
-      # with the output from the "meta" step.
-      # - name: Build and push Docker image
-      #   id: "push"
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     file: Containerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-
+      # Use a Makefile to build & push the image
       - name: "Build & push container image"
         id: "build"
         run: |
           make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} push-release
-          imagedigest="$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)"
-          echo "imagedigest=${imagedigest}"
-          echo "imagedigest=${imagedigest}" >> $GITHUB_ENV
-
-      # This step generates an artifact attestation for the image, which is an
-      # unforgeable statement about where and how it was built. It increases
-      # supply chain security for people who consume the image. For more
-      # information, see [Using artifact attestations to establish provenance for
-      # builds](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
-      - name: "Generate artifact attestation"
-        uses: "actions/attest-build-provenance@v2"
-        with:
-          subject-name: "${{ env.IMGBASETAG }}"
-          # subject-digest: "${{ steps.push.outputs.digest }}"
-          subject-digest: "${{ env.imagedigest }}"
-          push-to-registry: true
+          # imagedigest="$(make CONTAINER_ENGINE=docker REPOBASE=${{ env.REPOBASE }} get-release-image-digest)"
+          # echo "imagedigest=${imagedigest}" >> $GITHUB_ENV

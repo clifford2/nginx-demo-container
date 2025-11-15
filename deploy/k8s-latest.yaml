@@ -11,10 +11,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-nocolor"
-    app.kubernetes.io/version: "1.7.10"
+    app.kubernetes.io/version: "1.7.11"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-nocolor"
-    version: "1.7.10"
+    version: "1.7.11"
     color: "default"
 spec:
   replicas: 1
@@ -27,10 +27,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-nocolor"
-        app.kubernetes.io/version: "1.7.10"
+        app.kubernetes.io/version: "1.7.11"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-nocolor"
-        version: "1.7.10"
+        version: "1.7.11"
         color: "default"
     spec:
       hostNetwork: false
@@ -38,7 +38,7 @@ spec:
       hostIPC: false
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.7.10"
+          image: "ghcr.io/clifford2/nginx-demo:1.7.11"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -103,10 +103,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-blue"
-    app.kubernetes.io/version: "1.7.10"
+    app.kubernetes.io/version: "1.7.11"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-blue"
-    version: "1.7.10"
+    version: "1.7.11"
     color: "blue"
 spec:
   replicas: 1
@@ -119,10 +119,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-blue"
-        app.kubernetes.io/version: "1.7.10"
+        app.kubernetes.io/version: "1.7.11"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-blue"
-        version: "1.7.10"
+        version: "1.7.11"
         color: "blue"
     spec:
       hostNetwork: false
@@ -130,7 +130,7 @@ spec:
       hostIPC: false
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.7.10"
+          image: "ghcr.io/clifford2/nginx-demo:1.7.11"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -198,10 +198,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-green"
-    app.kubernetes.io/version: "1.7.10"
+    app.kubernetes.io/version: "1.7.11"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-green"
-    version: "1.7.10"
+    version: "1.7.11"
     color: "green"
 spec:
   replicas: 1
@@ -214,10 +214,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-green"
-        app.kubernetes.io/version: "1.7.10"
+        app.kubernetes.io/version: "1.7.11"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-green"
-        version: "1.7.10"
+        version: "1.7.11"
         color: "green"
     spec:
       hostNetwork: false
@@ -225,7 +225,7 @@ spec:
       hostIPC: false
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.7.10"
+          image: "ghcr.io/clifford2/nginx-demo:1.7.11"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
