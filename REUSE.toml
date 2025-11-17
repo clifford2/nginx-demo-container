@@ -1,7 +1,13 @@
 version = 1
 
 [[annotations]]
-path = ["*.md", "templates/index.*", ".version", "images/*.png", "images/favicon.ico"]
+path = ["README.md", "*/README.md", "build/templates/index.*", "build/templates/default-index.html", ".version", "images/*.png", "images/favicon.ico"]
 precedence = "closest"
-SPDX-FileCopyrightText = "© 2024 Clifford Weinmann <clifford@weinmann.africa>"
+SPDX-FileCopyrightText = "© 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>"
 SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
+path = ["build/semver"]
+precedence = "closest"
+SPDX-FileCopyrightText = "© François Saint-Jacques <https://github.com/fsaintjacques>"
+SPDX-License-Identifier = "Apache-2.0"

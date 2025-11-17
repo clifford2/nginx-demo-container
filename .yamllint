@@ -1,4 +1,8 @@
 ---
+# SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT-0
+
 extends: "default"
 
 rules:
