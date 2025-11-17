@@ -158,12 +158,12 @@ stop-dev:
 
 # Run tests against DEV image
 .PHONY: test-dev
-test-dev: .check-test-deps
+test-dev: .check-test-deps .install-trivy
 	@make --quiet run-dev
 	@bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	@make --quiet stop-dev
 	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
-	@command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
+	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
 
 # Start DEV instance & show results
 .PHONY: open-dev
@@ -205,12 +205,12 @@ stop-release:
 
 # Run tests against RELEASE image
 .PHONY: test-release
-test-release: .check-test-deps
+test-release: .check-test-deps .install-trivy
 	make --quiet run-release
 	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
-	command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
+	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
 
 # Build & push RELEASE image
 .PHONY: push-release
@@ -236,19 +236,19 @@ lint: .check-lint-depends
 # Increment APP_VERSION major version number
 .PHONY: bump-version-major
 bump-version-major: .check-ver-deps lint
-	@~/bin/semver bump major $(APP_VERSION) > .version
+	@bash ./build/semver bump major $(APP_VERSION) > .version
 	@bash ./build/fix-doc-version.sh
 
 # Increment APP_VERSION minor version number
 .PHONY: bump-version-minor
 bump-version-minor: .check-ver-deps
-	@~/bin/semver bump minor $(APP_VERSION) > .version
+	@bash ./build/semver bump minor $(APP_VERSION) > .version
 	@bash ./build/fix-doc-version.sh
 
 # Increment APP_VERSION patch version number
 .PHONY: bump-version-patch
 bump-version-patch: .check-ver-deps
-	@~/bin/semver bump patch $(APP_VERSION) > .version
+	@bash ./build/semver bump patch $(APP_VERSION) > .version
 	@bash ./build/fix-doc-version.sh
 
 # git tag with current APP_VERSION
@@ -273,8 +273,15 @@ git-tag-push: .git-tag .git-push
 # Install semver script if not present
 .PHONY: .install-semver
 .install-semver:
+	@test -f ./build/semver || curl --location --output ./build/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver && chmod 0755 ./build/semver
+	@bash ./build/semver --version
+
+# Install trivy scanner if not present
+.PHONY: .install-trivy
+.install-trivy:
 	@test -d ~/bin || mkdir ~/bin
-	@test -f ~/bin/semver || curl --location --output ~/bin/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver && chmod 0755 ~/bin/semver
+	command -v trivy || (cd ~/bin && curl -LO https://github.com/aquasecurity/trivy/releases/download/v0.67.2/trivy_0.67.2_Linux-64bit.tar.gz && tar -xzvf trivy_0.67.2_Linux-64bit.tar.gz trivy && rm trivy_0.67.2_Linux-64bit.tar.gz)
+	export PATH=~/bin:$$PATH; trivy --version
 
 # Verify that we have dependencies for versioning targets installed
 .PHONY: .check-ver-deps
@@ -300,7 +307,5 @@ git-tag-push: .git-tag .git-push
 .PHONY: check-depends
 check-depends: .check-git-deps .check-test-deps .check-lint-depends
 	command -v podman || command -v docker
-	command -v curl
 	command -v git
 	command -v trivy
-	command -v jq
