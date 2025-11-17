@@ -2,8 +2,9 @@
 
 ## About
 
-This code builds a very simple web server container image, which is
-handy for Continuous Deployment (CD) and load balancing tests & demos.
+This code builds a very simple web server container image, which is handy for
+[Continuous Deployment (CD)](https://en.wikipedia.org/wiki/Continuous_deployment)
+and load balancing tests & demos.
 It is running [nginx](https://nginx.org/) as a non root, unprivileged
 user, on port 8080.
 
@@ -32,6 +33,14 @@ Deploy with:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+```
+
+Demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/) with these commands to change the `$COLOR` of 2 of the deployments:
+
+```sh
+kubectl patch deployment nginx-demo-blue -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#1F63E0"}]}]}}}}'
+kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#3BC639"}]}]}}}}'
+watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
 You can also run the image locally with commands like this:
