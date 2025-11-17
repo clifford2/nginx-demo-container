@@ -210,7 +210,7 @@ test-release: .check-test-deps .install-trivy
 	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
-	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
+	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGRELTAG) || echo "Trivy not found - not scanning image"
 
 # Build & push RELEASE image
 .PHONY: push-release
