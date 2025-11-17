@@ -60,12 +60,13 @@ body {
 <body>
 <div id="content">
 <h1 class="ttl">Demo Container</h1>
-<p>A very simple demo container, running <a href="https://nginx.org/">nginx</a> version {NGINX_VERSION} as an unprivileged user.</p>
+<p>A very simple web server demo container, which is handy for Continuous Deployment (CD) and load balancing tests &amp; demos.</p>
 <hr>
-<p>Image information (<em>handy for CI/CD & Rolling Update tests</em>):</p>
+<p>Image information (<em>handy for CD &amp; Kubernetes Rolling Update tests</em>):</p>
 <ul>
-<li>Version: <span class="highlight1">{APP_VERSION}</span></li>
+<li>Image version: <span class="highlight1">{APP_VERSION}</span></li>
 <li>Build time: <span class="highlight1">{BUILD_TIME}</span></li>
+<li><a href="https://nginx.org/">nginx</a> version: {NGINX_VERSION}</a></li>
 </ul>
 <p>Container information (<em>handy for load balancing tests</em>):</p>
 <ul>
@@ -80,8 +81,6 @@ body {
 <li>CSV: <a href="index.csv">index.csv</a> (CR/LF terminated)</li>
 </ul>
 <hr>
-<p><em>Source code: <a href="https://github.com/clifford2/nginx-demo-container" target="_blank">github.com/clifford2/nginx-demo-container</a></em></p>
-<hr>
 <div id="wrapperbox">
 <div>Container environment - <code>$COLOR</code></div>
 <div id="colorbox"><code>
@@ -90,6 +89,8 @@ body {
 <span class="black">background-color: {COLOR}</span>
 </code></div>
 </div>
+<hr>
+<p><em>Source code: <a href="https://github.com/clifford2/nginx-demo-container" target="_blank">github.com/clifford2/nginx-demo-container</a></em></p>
 </div>
 </body>
 </html>
