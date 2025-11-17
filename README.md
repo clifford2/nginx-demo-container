@@ -45,22 +45,22 @@ You can also test the image with Podman or Docker, using commands like this (rep
 $ podman run -d --rm \
    -p 8081:8080 \
    --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.8.1
+   ghcr.io/clifford2/nginx-demo:1.9.0
 $ podman run -d --rm \
    -p 8082:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.8.1
+   ghcr.io/clifford2/nginx-demo:1.9.0
 $ podman run -d --rm \
    -p 8083:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.8.1
+   ghcr.io/clifford2/nginx-demo:1.9.0
 $ podman run -d --rm \
    -p 8084:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.8.1
+   ghcr.io/clifford2/nginx-demo:1.9.0
 
 $ xdg-open http://127.0.0.1:8081/index.html
 $ curl http://127.0.0.1:8082/index.json
@@ -77,7 +77,8 @@ To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/
 ```sh
 # Deploy an older-than-latest version:
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.6.1.yaml
-# Port forward the service to your device so you can access it locally (replace port 8088 to suite your needs):
+# Port forward the service to your device so you can access it locally
+# (replace port 8088 to suite your needs):
 kubectl port-forward service/nginx-demo 8088:8080
 # Connect to the service with a web browser (http://0.0.0.0:8088), and reload
 # a few times to see the load balancing between the 3 deployments.
@@ -104,6 +105,7 @@ watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 To test the liveness probe & automatic restart of a pod, remove the `healthz.json` file so that the probe fails:
 
 ```sh
+kubectl get pods -l app.kubernetes.io/name=nginx-demo
 kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 ```
 
