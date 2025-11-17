@@ -194,7 +194,7 @@ pull-release:
 
 # Start RELEASE container
 .PHONY: run-release
-run-release: pull-release
+run-release:
 	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 

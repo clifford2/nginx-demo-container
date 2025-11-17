@@ -49,22 +49,22 @@ You can also run the image locally with commands like this:
 $ podman run -d --rm \
    -p 8081:8080 \
    --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.8.0
+   ghcr.io/clifford2/nginx-demo:1.8.1
 $ podman run -d --rm \
    -p 8082:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.8.0
+   ghcr.io/clifford2/nginx-demo:1.8.1
 $ podman run -d --rm \
    -p 8083:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.8.0
+   ghcr.io/clifford2/nginx-demo:1.8.1
 $ podman run -d --rm \
    -p 8084:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.8.0
+   ghcr.io/clifford2/nginx-demo:1.8.1
 
 $ xdg-open http://127.0.0.1:8081/index.html
 $ curl http://127.0.0.1:8082/index.json
