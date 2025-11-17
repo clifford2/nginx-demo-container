@@ -27,23 +27,19 @@ An image built from this code is available at
 
 ## Using The Image
 
+### Basic Usage
+
 Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
-The latest version is also available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml).
-Deploy with:
+
+Deploy the latest version (available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml)) to your Kubernetes cluster with:
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
 ```
 
-Demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/) with these commands to change the `$COLOR` of 2 of the deployments:
+*Note that the `startupProbe` timing is intentionally longer than necessary to allow you to observe the transitions.*
 
-```sh
-kubectl patch deployment nginx-demo-blue -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#1F63E0"}]}]}}}}'
-kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#3BC639"}]}]}}}}'
-watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
-```
-
-You can also run the image locally with commands like this:
+You can also test the image with Podman or Docker, using commands like this (replace `podman` with `docker` if desired):
 
 ```shell
 $ podman run -d --rm \
@@ -72,6 +68,43 @@ $ curl http://127.0.0.1:8083/index.txt
 $ curl http://127.0.0.1:8084/index.csv
 
 $ podman stop nginx-demo-nocolor nginx-demo-red nginx-demo-blue nginx-demo-green
+```
+
+###  Rolling Update Demo
+
+To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/), try these steps:
+
+```sh
+# Deploy an older-than-latest version:
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.6.1.yaml
+# Port forward the service to your device so you can access it locally (replace port 8088 to suite your needs):
+kubectl port-forward service/nginx-demo 8088:8080
+# Connect to the service with a web browser (http://0.0.0.0:8088), and reload
+# a few times to see the load balancing between the 3 deployments.
+#
+# Change the `$COLOR` of 2 of the deployments:
+kubectl patch deployment nginx-demo-blue -p '{"spec":{"template":{"spec":{
+"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#1F63E0"}]}]
+}}}}'
+
+kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{
+"containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#3BC639"}]}]
+}}}}'
+# Watch the rollout happen (Ctrl-C to stop),
+# while also reloading the web page to see the effects:
+watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
+
+# Upgrade to the latest image version:
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+# Watch the rollout happen (Ctrl-C to stop),
+# while also reloading the web page to see the effects:
+watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
+```
+
+To test the liveness probe & automatic restart of a pod, remove the `healthz.json` file so that the probe fails:
+
+```sh
+kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 ```
 
 ## License & Disclaimer
