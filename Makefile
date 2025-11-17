@@ -163,7 +163,7 @@ test-dev: .check-test-deps .install-trivy
 	@bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	@make --quiet stop-dev
 	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
-	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGDEVTAG) || echo "Trivy not found - not scanning image"
+	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGDEVTAG) ; else echo 'Trivy not found - not scanning image'; fi
 
 # Start DEV instance & show results
 .PHONY: open-dev
@@ -210,7 +210,7 @@ test-release: .check-test-deps .install-trivy
 	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
-	export PATH=~/bin:$$PATH; command -v trivy && trivy image $(IMGRELTAG) || echo "Trivy not found - not scanning image"
+	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
 
 # Build & push RELEASE image
 .PHONY: push-release
@@ -308,4 +308,3 @@ git-tag-push: .git-tag .git-push
 check-depends: .check-git-deps .check-test-deps .check-lint-depends
 	command -v podman || command -v docker
 	command -v git
-	command -v trivy
