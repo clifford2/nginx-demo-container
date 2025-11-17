@@ -48,23 +48,29 @@ spec:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
-            failureThreshold: 2
-            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           readinessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 5
-            failureThreshold: 12
-            periodSeconds: 5
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
             failureThreshold: 2
+            initialDelaySeconds: 2
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
             requests:
               memory: "16Mi"
@@ -143,23 +149,29 @@ spec:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
-            failureThreshold: 2
-            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 8
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           readinessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 5
-            failureThreshold: 12
-            periodSeconds: 5
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
             failureThreshold: 2
+            initialDelaySeconds: 2
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
             requests:
               memory: "16Mi"
@@ -238,23 +250,29 @@ spec:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
-            failureThreshold: 2
-            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 12
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
           readinessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 5
-            failureThreshold: 12
-            periodSeconds: 5
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
-            initialDelaySeconds: 10
             failureThreshold: 2
+            initialDelaySeconds: 2
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
           resources:
             requests:
               memory: "16Mi"
