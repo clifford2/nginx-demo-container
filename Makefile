@@ -280,7 +280,7 @@ git-tag-push: .git-tag .git-push
 .PHONY: .install-trivy
 .install-trivy:
 	@test -d ~/bin || mkdir ~/bin
-	command -v trivy || (cd ~/bin && curl -LO https://github.com/aquasecurity/trivy/releases/download/v0.67.2/trivy_0.67.2_Linux-64bit.tar.gz && tar -xzvf trivy_0.67.2_Linux-64bit.tar.gz trivy && rm trivy_0.67.2_Linux-64bit.tar.gz)
+	command -v trivy.fixme || (cd ~/bin && TRIVY_VERSION=`curl --location --silent https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq '.name[1:]' -r` && echo "Version [$${TRIVY_VERSION}]" && curl --location --output trivy_Linux-64bit.tar.gz https://github.com/aquasecurity/trivy/releases/download/v$${TRIVY_VERSION}/trivy_$${TRIVY_VERSION}_Linux-64bit.tar.gz && tar -xzvf trivy_Linux-64bit.tar.gz trivy && rm trivy_Linux-64bit.tar.gz)
 	export PATH=~/bin:$$PATH; trivy --version
 
 # Verify that we have dependencies for versioning targets installed
