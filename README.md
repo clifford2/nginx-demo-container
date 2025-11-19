@@ -109,20 +109,6 @@ kubectl get pods -l app.kubernetes.io/name=nginx-demo
 kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 ```
 
-## License & Disclaimer
-
-This code is shared under the MIT No Attribution License.
-It is provided *AS IS*, without warranty of any kind.
-See [`LICENSES/MIT-0.txt`](LICENSES/MIT-0.txt) for the full license text and disclaimer.
-
-## Security
-
-This is a demo, provided for educational purposes only.
-
-While it is updated as often as possible, support is provided on a best effort basis only.
-
-Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/nginx-demo-container/issues).
-
 ## Output Samples
 
 Here are some output examples from November 2025 (different code releases).
@@ -175,3 +161,26 @@ start_time:2025-11-15T06:09:01Z
 color:#333
 nginx_version:1.29.2
 ```
+
+## Building The Image
+
+There are a couple of ways to build your own container image from this code, namely:
+
+- Build manually, using [GNU Make](https://www.gnu.org/software/make/), by running `make build-release && make test-release`
+- With [GitHub Actions](https://github.com/features/actions) (our current Continuous Integration (CI) approach) - see [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
+- With [Jenkins](https://www.jenkins.io/) - sample configuration available in [`Jenkinsfile`](Jenkinsfile)
+- With an [Azure DevOps Pipeline](https://azure.microsoft.com/en-us/products/devops/pipelines) - sample configuration available in [`azure-pipelines.yml`](azure-pipelines.yml) 
+
+## License & Disclaimer
+
+This code is shared under the MIT No Attribution License.
+It is provided *AS IS*, without warranty of any kind.
+See [`LICENSES/MIT-0.txt`](LICENSES/MIT-0.txt) for the full license text and disclaimer.
+
+## Security
+
+This is a demo, provided for educational purposes only.
+
+While it is updated as often as possible, support is provided on a best effort basis only.
+
+Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/nginx-demo-container/issues).

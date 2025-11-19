@@ -1,0 +1,104 @@
+---
+# SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+#
+# Example Azure DevOps pipeline to build container image
+# Not currently in use
+# Last tested with v1.9.0 - 2025-11-19
+#
+# Required variables:
+# - Change USE_AZURE_REGISTRY to true if using Azure Container Registry
+# - Add a REGISTRY_PASSWORD secret variable to the pipeline if not using ACR
+#
+# To push to an Azure Container Registery, create Container Registry with:
+#   az group create --name citest20251119 --location eastus
+#   az acr create --resource-group  citest20251119 --name clifford --sku Basic
+#   az acr update -n clifford --admin-enabled true
+# Then create a service connection in the Azure DevOps project,
+# and specify it's name in the containerRegistry value for the login step below
+
+trigger:
+  tags:
+    include:
+      - "*"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  # Use Azure Container Registry?
+  - name: "USE_AZURE_REGISTRY"
+    value: "false"
+  - name: "REGISTRY_NAME"
+    value: "docker.io"
+  - name: "REGISTRY_USER"
+    value: "cliffordw"
+  - name: "REPOBASE"
+    value: "docker.io/cliffordw"
+  # Azure Container Registry example
+  # - name: "REPOBASE"
+  #   value: "clifford.azurecr.io/cliffordw"
+
+stages:
+  - stage: "Build"
+    jobs:
+      - job: "Build"
+        steps:
+
+          - task: Bash@3
+            displayName: "Build the container image"
+            inputs:
+              targetType: "inline"
+              script: |
+                make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE build-release
+                make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE test-release
+
+          - task: Docker@2
+            displayName: "Login to ACR"
+            condition: and(
+                ne(variables['USE_AZURE_REGISTRY'], ''),
+                eq(variables['USE_AZURE_REGISTRY'], 'true')
+              )
+            inputs:
+              command: "login"
+              # Name of service connection to Azure Container Registry
+              # Using a variable here fails with:
+              # The pipeline is not valid. Job Build: Step Docker input containerRegistry references service connection $ACR_SERVICE_CONNECTION which could not be found. The service connection does not exist, has been disabled or has not been authorized for use. For authorization details, refer to https://aka.ms/yamlauthz.
+              # containerRegistry: "$ACR_SERVICE_CONNECTION"
+              containerRegistry: "acr-clifford"
+
+          - task: Bash@3
+            displayName: "Login to other container registry"
+            condition: and(
+                ne(variables['USE_AZURE_REGISTRY'], 'true'),
+                ne(variables['REGISTRY_NAME'], ''),
+                ne(variables['REGISTRY_USER'], ''),
+                ne(variables['REGISTRY_PASSWORD'], '')
+              )
+            inputs:
+              targetType: "inline"
+              script: |
+                docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASSWORD" "$REGISTRY_NAME"
+            env:
+              REGISTRY_PASSWORD: $(REGISTRY_PASSWORD)
+
+          - task: Bash@3
+            displayName: "Push the container image"
+            inputs:
+              targetType: "inline"
+              script: |
+                make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE push-release
+
+          - task: Bash@3
+            displayName: "Logout of other container registry"
+            condition: and(
+                always(),
+                ne(variables['USE_AZURE_REGISTRY'], 'true'),
+                ne(variables['REGISTRY_NAME'], ''),
+                ne(variables['REGISTRY_USER'], ''),
+                ne(variables['REGISTRY_PASSWORD'], '')
+              )
+            inputs:
+              targetType: "inline"
+              script: |
+                docker logout "$REGISTRY_NAME"

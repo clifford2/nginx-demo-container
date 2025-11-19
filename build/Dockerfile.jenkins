@@ -1,0 +1,60 @@
+# Jenkins build agent container image
+# Used by ../Jenkinsfile
+#
+# SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+#----------------------------------------------------------------------#
+#-# Base image with DEB packages
+# This requires internet access, and could possibly be built as a separate image on a connected host
+FROM docker.io/library/debian:trixie-20251103-slim AS base
+
+# Install required packages
+# - git & make are required in final image
+# - ca-certificates is required by curl
+# - curl unzip xz-utils are required for installing other tools
+# - lsb-release is required for docker install steps
+# - jq & yamllint are required by our Makefile
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo 'Install Debian packages' && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends git make ca-certificates curl unzip xz-utils lsb-release jq yamllint && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Docker CLI for communicating with Docker agents
+RUN echo 'Install Docker CLI' && \
+    install -m 0755 -d /etc/apt/keyrings && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && \
+    chmod a+r /etc/apt/keyrings/docker.asc && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+	apt-get install -y docker-ce-cli && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+#----------------------------------------------------------------------#
+#-# Download & unpack all files
+FROM base AS unpack
+
+WORKDIR /opt
+
+RUN echo 'Download Trivy' && \
+	mkdir trivy && \
+	cd trivy && \
+	TRIVY_VERSION=$(curl --location --silent https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq '.name[1:]' -r) && \
+	echo "Version [${TRIVY_VERSION}]" && \
+	curl --location --output trivy_Linux-64bit.tar.gz https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && \
+	tar -xzvf trivy_Linux-64bit.tar.gz trivy && rm trivy_Linux-64bit.tar.gz
+
+
+#----------------------------------------------------------------------#
+#-# Final image
+FROM base AS final
+
+WORKDIR /opt
+
+COPY --from=unpack --chmod=0755 /opt/trivy/trivy /usr/local/bin/trivy
+
+RUN /usr/sbin/useradd --create-home --uid 1000 --shell /bin/bash jenkins
+WORKDIR /home/jenkins
+USER 1000

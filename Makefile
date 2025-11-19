@@ -195,6 +195,7 @@ pull-release:
 # Start RELEASE container
 .PHONY: run-release
 run-release:
+	$(CONTAINER_ENGINE) ps -a | grep -w $(IMGBASENAME); if [ $$? -eq 0 ]; then $(CONTAINER_ENGINE) stop $(IMGBASENAME); fi
 	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
@@ -207,7 +208,8 @@ stop-release:
 .PHONY: test-release
 test-release: .check-test-deps .install-trivy
 	make --quiet run-release
-	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
+	$(CONTAINER_ENGINE) ps -a
+	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
 	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
@@ -215,7 +217,7 @@ test-release: .check-test-deps .install-trivy
 # Build & push RELEASE image
 .PHONY: push-release
 push-release:
-	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)
+	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)|| echo 'Not logging into registry'
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
 	# tag with major.minor version
@@ -280,7 +282,7 @@ git-tag-push: .git-tag .git-push
 .PHONY: .install-trivy
 .install-trivy:
 	@test -d ~/bin || mkdir ~/bin
-	command -v trivy.fixme || (cd ~/bin && TRIVY_VERSION=`curl --location --silent https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq '.name[1:]' -r` && echo "Version [$${TRIVY_VERSION}]" && curl --location --output trivy_Linux-64bit.tar.gz https://github.com/aquasecurity/trivy/releases/download/v$${TRIVY_VERSION}/trivy_$${TRIVY_VERSION}_Linux-64bit.tar.gz && tar -xzvf trivy_Linux-64bit.tar.gz trivy && rm trivy_Linux-64bit.tar.gz)
+	command -v trivy || (cd ~/bin && TRIVY_VERSION=`curl --location --silent https://api.github.com/repos/aquasecurity/trivy/releases/latest | jq '.name[1:]' -r` && echo "Version [$${TRIVY_VERSION}]" && curl --location --output trivy_Linux-64bit.tar.gz https://github.com/aquasecurity/trivy/releases/download/v$${TRIVY_VERSION}/trivy_$${TRIVY_VERSION}_Linux-64bit.tar.gz && tar -xzvf trivy_Linux-64bit.tar.gz trivy && rm trivy_Linux-64bit.tar.gz)
 	export PATH=~/bin:$$PATH; trivy --version
 
 # Verify that we have dependencies for versioning targets installed
