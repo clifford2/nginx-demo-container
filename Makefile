@@ -275,7 +275,7 @@ git-tag-push: .git-tag .git-push
 # Install semver script if not present
 .PHONY: .install-semver
 .install-semver:
-	@test -f ./build/semver || curl --location --output ./build/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver && chmod 0755 ./build/semver
+	@test -f ./build/semver || (curl --location --output ./build/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver && chmod 0755 ./build/semver)
 	@bash ./build/semver --version
 
 # Install trivy scanner if not present

@@ -1,0 +1,72 @@
+---
+# SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+#
+# Example GitLab pipeline to build container image
+# Not currently in use
+# Last tested with v1.9.0 - 2025-11-21
+#
+# Required variables:
+# - Change USE_AZURE_REGISTRY to true if using Azure Container Registry
+# - Add a REGISTRY_PASSWORD secret variable to the pipeline if not using ACR
+#
+# This pipeline first builds a container image that contains all our build
+# dependencies, then runs "make" in that container to build our image.
+# There are more efficient ways to do do this (own runner, permanent build
+# image) ;-)
+
+stages:
+  - "secret-detection"
+  - "build-builder"
+  - "build-image"
+
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+include:
+  - template: "Security/Secret-Detection.gitlab-ci.yml"
+
+variables:
+  SECRET_DETECTION_ENABLED: "true"
+  REGISTRY_NAME: "docker.io"
+  REGISTRY_USER: "cliffordw"
+  REPOBASE: "docker.io/cliffordw"
+
+secret_detection:
+  stage: "secret-detection"
+
+# Build a container image that contains all our build dependencies
+build-builder:
+  stage: "build-builder"
+  image: "docker.io/library/docker:29-cli"
+  services:
+    - name: "docker.io/library/docker:29-dind"
+      alias: "docker"
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f build/Dockerfile.jenkins -t $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
+
+# Run "make" in container from "build-builder" 
+build-image:
+  stage: "build-image"
+  image: $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
+  services:
+    - name: "docker.io/library/docker:29-dind"
+      alias: "docker"
+  tags:
+    - "saas-linux-small-amd64"
+  before_script:
+    - export DOCKER_HOST="tcp://docker:2375"
+    - "docker info"
+  script:
+    - export DOCKER_HOST="tcp://docker:2375"
+    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE build-release
+    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE test-release
+    - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASSWORD" "$REGISTRY_NAME"
+    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE push-release
+    - docker logout "$REGISTRY_NAME"
