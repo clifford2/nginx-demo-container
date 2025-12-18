@@ -66,6 +66,9 @@ USER root
 # - CVE-2025-46394 (Low)
 RUN /sbin/apk add --no-cache busybox=1.37.0-r20
 
+# Install curl for testing the image - see build/test.sh.
+RUN /sbin/apk add --no-cache curl
+
 ARG APP_VERSION
 ARG BUILD_TIME
 ARG GIT_REVISION
