@@ -170,6 +170,7 @@ There are a couple of ways to build your own container image from this code, nam
 - With [GitHub Actions](https://github.com/features/actions) (our current Continuous Integration (CI) approach) - see [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
 - With [Jenkins](https://www.jenkins.io/) - sample configuration available in [`Jenkinsfile`](Jenkinsfile)
 - With an [Azure DevOps Pipeline](https://azure.microsoft.com/en-us/products/devops/pipelines) - sample configuration available in [`azure-pipelines.yml`](azure-pipelines.yml) 
+- With [GitLab CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/) - sample configuration available in [`.gitlab-ci.yml`](.gitlab-ci.yml)
 
 ## License & Disclaimer
 
