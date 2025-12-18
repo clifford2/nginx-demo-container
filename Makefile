@@ -217,7 +217,7 @@ test-release: .check-test-deps .install-trivy
 # Build & push RELEASE image
 .PHONY: push-release
 push-release:
-	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY)|| echo 'Not logging into registry'
+	test ! -z "$(REGISTRY)" && $(CONTAINER_ENGINE) login $(REGISTRY) || echo 'Not logging into registry'
 	$(CONTAINER_ENGINE) push $(IMGRELTAG)
 	$(CONTAINER_ENGINE) tag $(IMGRELTAG) $(IMGRELNAME):$(shell cat .version | cut -d- -f1 | cut -d. -f1-2)
 	# tag with major.minor version

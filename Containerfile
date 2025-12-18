@@ -3,18 +3,19 @@
 # SPDX-License-Identifier: MIT-0
 
 # ARGs to be passed at build time:
-# ARG APP_VERSION="our code version"
-# ARG BUILD_TIME="RFC 3339 build time"
-# ARG GIT_REVISION="$(git rev-parse @)"
+#  ARG APP_VERSION="our code version"
+#  ARG BUILD_TIME="RFC 3339 build time"
+#  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.29.2"
+ARG NGINX_VERSION="1.29.3"
+ARG BASEIMAGE="docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine3.22-slim"
 ARG ALPINE_VERSION="3.22"
 # NGINX_UID for nginx user in base image
 ARG NGINX_UID="101"
 
 #----------------------------------------------------------------------#
 #-# Customize content templates
-FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION} AS templates
+FROM ${BASEIMAGE} AS templates
 
 ARG APP_VERSION
 ARG BUILD_TIME
@@ -25,7 +26,7 @@ ARG NGINX_UID
 USER root
 
 # Install jq to minify index.json
-RUN apk add jq
+RUN apk add --no-cache jq
 
 # Add HTTP cache control headers
 RUN sed -i -e '/^}/i add_header Cache-Control "no-cache, no-store, must-revalidate";' /etc/nginx/conf.d/default.conf
@@ -56,7 +57,14 @@ RUN echo 'Insert image details' && \
 
 #----------------------------------------------------------------------#
 #-# Final image
-FROM docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}
+FROM ${BASEIMAGE}
+
+USER root
+
+# 2025-12-18 - Patch vulnerabilities in docker.io/nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
+# - CVE-2024-58251 (Medium)
+# - CVE-2025-46394 (Low)
+RUN /sbin/apk add --no-cache busybox=1.37.0-r20
 
 ARG APP_VERSION
 ARG BUILD_TIME
@@ -74,22 +82,6 @@ LABEL org.opencontainers.image.source="https://github.com/clifford2/nginx-demo-c
 LABEL org.opencontainers.image.title="nginx-demo-container"
 LABEL org.opencontainers.image.url="https://github.com/clifford2/nginx-demo-container"
 LABEL org.opencontainers.image.version="${APP_VERSION}"
-
-
-# 2025-03-29: Patch the following vulnerabilities in docker.io/nginxinc/nginx-unprivileged:1.27.4-alpine3.21
-# - CVE-2024-56171 libxml2: Use-After-Free in libxml2
-# - CVE-2025-24928 libxml2: Stack-based buffer overflow in xmlSnprintfElements of libxml2
-# - CVE-2025-27113 libxml2: NULL Pointer Dereference in libxml2 xmlPatMatch
-# - CVE-2024-55549 libxslt: Use-After-Free in libxslt (xsltGetInheritedNsList)
-# - CVE-2025-24855 libxslt: Use-After-Free in libxslt numbers.c
-# - CVE-2024-8176 libexpat: expat: Improper Restriction of XML Entity Expansion Depth in libexpat
-# RUN /sbin/apk add --no-cache libxml2=2.13.4-r5 libxslt=1.1.42-r2 libexpat=2.7.0-r0
-# These versions are installed in the docker.io/nginxinc/nginx-unprivileged:1.28.0-alpine3.21 image
-
-USER root
-
-# Removed 2025-11-14 - original purpose is unclear
-# RUN /sbin/apk add --no-cache curl
 
 # Add HTTP cache control headers
 COPY --from=templates /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
