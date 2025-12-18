@@ -214,6 +214,11 @@ test-release: .check-test-deps .install-trivy
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
 	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
 
+# Create SPDX SBOM for release image
+.PHONY: sbom-release
+sbom-release:
+	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; trivy image --scanners vuln --format spdx-json --output sbom.json $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
+
 # Build & push RELEASE image
 .PHONY: push-release
 push-release:
