@@ -68,6 +68,8 @@ help:
 	@echo "  make bump-version-{major,minor,patch}: Increment version"
 	@echo "  git commit -a:       Commit changes to version control"
 	@echo "  make git-tag-push:   Tag git repo with current version & push"
+	@echo "  # Wait for GitHub Action to complete, then:"
+	@echo "  make sbom-release:   Generate Trivy SBOM & commit to source"
 	@echo ""
 	@echo "Optional release targets:"
 	@echo ""
@@ -89,12 +91,12 @@ get-version:
 # Show calculated DEV image name
 .PHONY: get-dev-image-name
 get-dev-image-name:
-	@echo "$(IMGRELTAG)"
+	@echo "$(IMGDEVTAG)"
 
 # Show calculated RELEASE image name
 .PHONY: get-release-image-name
 get-release-image-name:
-	@echo "$(IMGDEVTAG)"
+	@echo "$(IMGRELTAG)"
 
 # Get sha256 digest for latest DEV image
 .PHONY: get-dev-image-digest
@@ -216,8 +218,12 @@ test-release: .check-test-deps .install-trivy
 
 # Create SPDX SBOM for release image
 .PHONY: sbom-release
-sbom-release:
-	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; trivy image --scanners vuln --format spdx-json --output sbom.json $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
+sbom-release: .install-trivy
+	@test -d sbom || mkdir sbom
+	export PATH=~/bin:$$PATH; trivy image $(IMGRELTAG) ; trivy image --scanners vuln --format spdx-json --output sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
+	git add sbom/sbom-v$(APP_VERSION).json
+	git commit -m "Added SBOM for $(IMGRELTAG)"
+	git push
 
 # Build & push RELEASE image
 .PHONY: push-release
