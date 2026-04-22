@@ -7,6 +7,12 @@ SPDX-FileCopyrightText = "© 2024 Clifford Weinmann <https://www.cliffordweinman
 SPDX-License-Identifier = "MIT-0"
 
 [[annotations]]
+path = ["sbom/*"]
+precedence = "closest"
+SPDX-FileCopyrightText = "© 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>"
+SPDX-License-Identifier = "MIT-0"
+
+[[annotations]]
 path = ["build/semver"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© François Saint-Jacques <https://github.com/fsaintjacques>"
