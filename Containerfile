@@ -7,7 +7,7 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.29.5"
+ARG NGINX_VERSION="1.30.0"
 ARG ALPINE_VERSION="3.23"
 ARG BASEIMAGE="docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}-slim"
 # NGINX_UID for nginx user in base image
@@ -61,13 +61,11 @@ FROM ${BASEIMAGE}
 
 USER root
 
-# 2025-12-18 - Patch vulnerabilities in docker.io/nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
-# RUN /sbin/apk add --no-cache busybox=1.37.0-r20
-# 2026-03-11 - Patch CVE-2026-22184 in docker.io/nginxinc/nginx-unprivileged:1.29.5-alpine3.23-slim
-RUN /sbin/apk add --no-cache zlib=1.3.2-r0
-
 # Install curl for testing the image - see build/test.sh.
-RUN /sbin/apk add --no-cache curl
+# Also install any required security patches in this step
+RUN /sbin/apk update && \
+	/sbin/apk add curl && \
+	rm -rf /var/cache/apk/*
 
 ARG APP_VERSION
 ARG BUILD_TIME
