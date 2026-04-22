@@ -65,7 +65,7 @@ help:
 	@echo "Release steps:"
 	@echo ""
 	@echo "  make lint:           Check for YAML syntax errors"
-	@echo "  make bump-version-{major,minor,patch}: Increment version"
+	@echo "  make bump-version-{major,minor,patch}: Increment container image version"
 	@echo "  git commit -a:       Commit changes to version control"
 	@echo "  make git-tag-push:   Tag git repo with current version & push"
 	@echo "  # Wait for GitHub Action to complete, then:"
@@ -221,7 +221,7 @@ test-release: .check-test-deps
 sbom-release:
 	@test -d sbom || mkdir sbom
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --no-progress
-	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output /sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
 	git add sbom/sbom-v$(APP_VERSION).json
 	git commit -m "Added SBOM for $(IMGRELTAG)"
 	git push
