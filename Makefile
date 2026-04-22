@@ -160,12 +160,12 @@ stop-dev:
 
 # Run tests against DEV image
 .PHONY: test-dev
-test-dev: .check-test-deps .install-trivy
+test-dev: .check-test-deps
 	@make --quiet run-dev
 	@bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)"
 	@make --quiet stop-dev
 	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
-	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGDEVTAG) ; else echo 'Trivy not found - not scanning image'; fi
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGDEVTAG) --exit-code 1 --no-progress --severity HIGH,CRITICAL
 
 # Start DEV instance & show results
 .PHONY: open-dev
@@ -208,19 +208,20 @@ stop-release:
 
 # Run tests against RELEASE image
 .PHONY: test-release
-test-release: .check-test-deps .install-trivy
+test-release: .check-test-deps
 	make --quiet run-release
 	$(CONTAINER_ENGINE) ps -a
 	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
-	export PATH=~/bin:$$PATH; if command -v trivy; then trivy image $(IMGRELTAG) ; else echo 'Trivy not found - not scanning image'; fi
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --exit-code 1 --no-progress --severity HIGH,CRITICAL
 
 # Create SPDX SBOM for release image
 .PHONY: sbom-release
-sbom-release: .install-trivy
+sbom-release:
 	@test -d sbom || mkdir sbom
-	export PATH=~/bin:$$PATH; trivy image $(IMGRELTAG) ; trivy image --scanners vuln --format spdx-json --output sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --no-progress
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
 	git add sbom/sbom-v$(APP_VERSION).json
 	git commit -m "Added SBOM for $(IMGRELTAG)"
 	git push
@@ -289,7 +290,8 @@ git-tag-push: .git-tag .git-push
 	@test -f ./build/semver || (curl --location --output ./build/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver && chmod 0755 ./build/semver)
 	@bash ./build/semver --version
 
-# Install trivy scanner if not present
+# Install trivy scanner locally if not present
+# Deprecated - we now run it in a container instead
 .PHONY: .install-trivy
 .install-trivy:
 	@test -d ~/bin || mkdir ~/bin
