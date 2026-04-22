@@ -44,6 +44,9 @@ curl --silent \
 # Optional alternate: create OpenShift Route
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
+# Without Ingress / Route, port forward the service to your device so
+# you can access it locally (replace port 8088 to suite your needs):
+kubectl port-forward service/nginx-demo 8088:8080
 ```
 
 *Note that the `startupProbe` timing is intentionally longer than necessary to allow you to observe the transitions.*
