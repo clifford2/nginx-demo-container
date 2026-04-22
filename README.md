@@ -34,7 +34,16 @@ Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
 Deploy the latest version (available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml)) to your Kubernetes cluster with:
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+# Create Deployment
+kubectl apply -f \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-latest.yaml
+# Optional: create Ingress (substitute `${YOUR_DOMAIN}`)
+curl --silent \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/ingress.yaml \
+  | sed -e "s/ host: .*/host: nginx-demo.${YOUR_DOMAIN}/" | kubectl apply -f -
+# Optional alternate: create OpenShift Route
+kubectl apply -f \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
 ```
 
 *Note that the `startupProbe` timing is intentionally longer than necessary to allow you to observe the transitions.*
