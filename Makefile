@@ -74,6 +74,7 @@ help:
 	@echo "Optional release targets:"
 	@echo ""
 	@echo "  build-release:  Build release image ($(IMGRELTAG)) (also done by GitHub Actions)"
+	@echo "  test-release:   Test the release image (Trivy, curl)"
 	@echo "  push-release:   Push release image ($(IMGRELTAG))"
 	@echo "  run-release:    Run DEFAULT release container on port $(DEVPORT)"
 	@echo "  stop-release:   Stop release container"

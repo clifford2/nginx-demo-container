@@ -5,13 +5,10 @@
 name: "Create and publish container image"
 
 "on":
-  push:
-    # Configures this workflow to run every time a change is pushed to the branch called `main`.
-    # branches: ['main']
-    # Pattern matched against refs/tags
-    tags:
-      - "*"  # Push events to every tag not containing /
   workflow_dispatch:
+  # push:
+  #   tags:
+  #     - "*"
 
 # Defines custom environment variables for the workflow.
 # These are used for the Container registry domain, and a name for the
