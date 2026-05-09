@@ -120,15 +120,15 @@ build-dev:
 	@echo ""
 	@echo "JSON content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.json | jq '' || true
+	@curl --silent http://127.0.0.1:$(DEVPORT)/index.json | jq '' || true
 	@echo ""
 	@echo "TXT content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.txt || true
+	@curl --silent http://127.0.0.1:$(DEVPORT)/index.txt || true
 	@echo ""
 	@echo "CSV content:"
 	@echo ""
-	@curl --silent http://127.0.0.1:8080/index.csv || true
+	@curl --silent http://127.0.0.1:$(DEVPORT)/index.csv || true
 
 # Run DEV instance with default colour
 .PHONY: run-dev
