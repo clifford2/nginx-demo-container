@@ -133,25 +133,25 @@ build-dev:
 # Run DEV instance with default colour
 .PHONY: run-dev
 run-dev:
-	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p 127.0.0.1:$(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with blue-ish colour
 .PHONY: run-dev-blue
 run-dev-blue:
-	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#1F63E0' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p 127.0.0.1:$(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#1F63E0' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with green-ish colour
 .PHONY: run-dev-green
 run-dev-green:
-	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#3BC639' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p 127.0.0.1:$(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#3BC639' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Run DEV instance with green-ish colour
 .PHONY: run-dev-red
 run-dev-red:
-	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#B44B4C' $(IMGDEVTAG)
+	$(RUN_CMD) --rm -d -p 127.0.0.1:$(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m -e COLOR='#B44B4C' $(IMGDEVTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Stop DEV container
@@ -199,7 +199,7 @@ pull-release:
 .PHONY: run-release
 run-release:
 	$(CONTAINER_ENGINE) ps -a | grep -w $(IMGBASENAME); if [ $$? -eq 0 ]; then $(CONTAINER_ENGINE) stop $(IMGBASENAME); fi
-	$(RUN_CMD) --rm -d -p $(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
+	$(RUN_CMD) --rm -d -p 127.0.0.1:$(DEVPORT):8080 --name $(IMGBASENAME) --memory-reservation 16m --memory-reservation 32m $(IMGRELTAG)
 	@echo "The container should be accessible at http://0.0.0.0:$(DEVPORT)/"
 
 # Stop RELEASE container
