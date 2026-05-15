@@ -7,7 +7,7 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.30.0"
+ARG NGINX_VERSION="1.31.0"
 ARG ALPINE_VERSION="3.23"
 ARG BASEIMAGE="docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}-slim"
 # NGINX_UID for nginx user in base image
