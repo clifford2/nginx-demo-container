@@ -51,32 +51,33 @@ help:
 	@echo "Development targets:"
 	@echo ""
 	@echo "normal cycle:"
-	@echo "  check-depends:  Verify that all external dependencies are available"
-	@echo "  build-dev:      Build development image ($(IMGDEVTAG))"
-	@echo "  test-dev:       Test the development image (Trivy, curl)"
-	@echo "  open-dev:       Run development container & open in browser"
-	@echo "  stop-dev:       Stop development container"
+	@echo "  check-depends:      Verify that all external dependencies are available"
+	@echo "  build-dev:          Build development image ($(IMGDEVTAG))"
+	@echo "  test-dev:           Test the development image (Trivy, curl)"
+	@echo "  open-dev:           Run development container & open in browser"
+	@echo "  stop-dev:           Stop development container"
 	@echo "additional testing:"
-	@echo "  run-dev:        Run DEFAULT (no colour override) development container on port $(DEVPORT)"
-	@echo "  run-dev-blue:   Run BLUE development container on port $(DEVPORT)"
-	@echo "  run-dev-green:  Run GREEN development container on port $(DEVPORT)"
-	@echo "  run-dev-red:    Run RED development container on port $(DEVPORT)"
+	@echo "  run-dev:            Run DEFAULT (no colour override) development container on port $(DEVPORT)"
+	@echo "  run-dev-blue:       Run BLUE development container on port $(DEVPORT)"
+	@echo "  run-dev-green:      Run GREEN development container on port $(DEVPORT)"
+	@echo "  run-dev-red:        Run RED development container on port $(DEVPORT)"
 	@echo ""
 	@echo "Release steps:"
 	@echo ""
-	@echo "  make lint:           Check for YAML syntax errors"
+	@echo "  reuse lint:         Check license compliance"
 	@echo "  make bump-version-{major,minor,patch}: Increment container image version"
-	@echo "  build-release:  Build release image ($(IMGRELTAG))"
-	@echo "  test-release:   Test the release image (Trivy, curl)"
-	@echo "  make sbom-release:   Generate Trivy SBOM & commit to source"
-	@echo "  git commit -a:       Commit changes to version control"
-	@echo "  make git-tag-push:   Tag git repo with current version & push"
-	@echo "  push-release:   Push release image ($(IMGRELTAG))"
+	@echo "  make build-release: Build release image ($(IMGRELTAG))"
+	@echo "  make test-release:  Test the release image (Trivy, curl)"
+	@echo "  make sbom-release:  Generate Trivy SBOM & commit to source"
+	@echo "  git commit -a:      Commit changes to version control"
+	@echo "  make git-tag-push:  Tag git repo with current version & push"
+	@echo "  make push-release:  Push release image ($(IMGRELTAG))"
 	@echo ""
 	@echo "Optional release targets:"
 	@echo ""
-	@echo "  run-release:    Run DEFAULT release container on port $(DEVPORT)"
-	@echo "  stop-release:   Stop release container"
+	@echo "  lint:               Check for YAML syntax errors"
+	@echo "  run-release:        Run DEFAULT release container on port $(DEVPORT)"
+	@echo "  stop-release:       Stop release container"
 	@echo ""
 	@echo "We're using $(CONTAINER_ENGINE) on $(BUILDARCH)"
 	@echo "Would build version $(APP_VERSION)"
@@ -222,9 +223,9 @@ sbom-release:
 	@test -d sbom || mkdir sbom
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --no-progress
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output /sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
-	git add sbom/sbom-v$(APP_VERSION).json
-	git commit -m "Added SBOM for $(IMGRELTAG)"
-	git push
+#	git add sbom/sbom-v$(APP_VERSION).json
+#	git commit -m "Added SBOM for $(IMGRELTAG)"
+#	git push
 
 # Build & push RELEASE image
 .PHONY: push-release
@@ -255,13 +256,13 @@ bump-version-major: .check-ver-deps lint
 
 # Increment APP_VERSION minor version number
 .PHONY: bump-version-minor
-bump-version-minor: .check-ver-deps
+bump-version-minor: .check-ver-deps lint
 	@bash ./build/semver bump minor $(APP_VERSION) > .version
 	@bash ./build/fix-doc-version.sh
 
 # Increment APP_VERSION patch version number
 .PHONY: bump-version-patch
-bump-version-patch: .check-ver-deps
+bump-version-patch: .check-ver-deps lint
 	@bash ./build/semver bump patch $(APP_VERSION) > .version
 	@bash ./build/fix-doc-version.sh
 
