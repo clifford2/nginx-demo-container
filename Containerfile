@@ -1,5 +1,4 @@
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
 # ARGs to be passed at build time:
@@ -7,11 +6,12 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.31.0"
+ARG NGINX_VERSION="1.31.1"
 ARG ALPINE_VERSION="3.23"
-ARG BASEIMAGE="docker.io/nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine${ALPINE_VERSION}-slim"
-# NGINX_UID for nginx user in base image
+ARG BASEIMAGE="docker.io/library/nginx:${NGINX_VERSION}-alpine${ALPINE_VERSION}-slim"
+# UID & GID for nginx user in base image
 ARG NGINX_UID="101"
+ARG NGINX_GID="101"
 
 #----------------------------------------------------------------------#
 #-# Customize content templates
@@ -29,10 +29,11 @@ USER root
 RUN apk add --no-cache jq
 
 # Add HTTP cache control headers
-RUN sed -i -e '/^}/i add_header Cache-Control "no-cache, no-store, must-revalidate";' /etc/nginx/conf.d/default.conf
-RUN sed -i -e '/^}/i add_header Expires 0;' /etc/nginx/conf.d/default.conf
-RUN sed -i -e '/^}/i add_header Pragma "no-cache";' /etc/nginx/conf.d/default.conf
-RUN sed -i -e '/^}/i etag off;' /etc/nginx/conf.d/default.conf
+# 2026-05-23: no longer needed, as we now copy a full config file
+# RUN sed -i -e '/^}/i add_header Cache-Control "no-cache, no-store, must-revalidate";' /etc/nginx/conf.d/default.conf
+# RUN sed -i -e '/^}/i add_header Expires 0;' /etc/nginx/conf.d/default.conf
+# RUN sed -i -e '/^}/i add_header Pragma "no-cache";' /etc/nginx/conf.d/default.conf
+# RUN sed -i -e '/^}/i etag off;' /etc/nginx/conf.d/default.conf
 
 # Add our content
 RUN echo 'Initializing templates' && \
@@ -72,6 +73,7 @@ ARG BUILD_TIME
 ARG GIT_REVISION
 ARG NGINX_VERSION
 ARG NGINX_UID
+ARG NGINX_GID
 
 LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
 LABEL org.opencontainers.image.authors="Clifford Weinmann <https://www.cliffordweinmann.com/>"
@@ -84,8 +86,9 @@ LABEL org.opencontainers.image.title="nginx-demo-container"
 LABEL org.opencontainers.image.url="https://github.com/clifford2/nginx-demo-container"
 LABEL org.opencontainers.image.version="${APP_VERSION}"
 
-# Add HTTP cache control headers
-COPY --from=templates /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+# Add Nginx config files
+COPY --chmod=0644 ./build/templates/nginx.conf /etc/nginx/nginx.conf
+COPY --chmod=0644 ./build/templates/default.conf /etc/nginx/conf.d/default.conf
 
 # Add our content
 RUN echo 'Initializing templates' && \
@@ -97,5 +100,10 @@ COPY --chmod=0755 build/templates/99-subst-on-index.sh /docker-entrypoint.d/99-s
 COPY --from=templates --chmod=0644 --chown=${NGINX_UID}:${NGINX_UID} /usr/share/nginx/html/index.html /usr/share/nginx/html/index.html
 COPY --from=templates --chmod=0644 /usr/share/nginx/html-template/ /usr/share/nginx/html-template/
 
+EXPOSE 8080/tcp
+STOPSIGNAL SIGQUIT
+
 USER $NGINX_UID
+
+# Necessary in case we're running the container with a read-only root filesystem
 VOLUME ["/usr/share/nginx/html"]

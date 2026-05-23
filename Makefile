@@ -38,9 +38,9 @@ ifeq ($(CONTAINER_ENGINE),podman)
 else
 	BUILDARCH := $(shell docker version --format '{{.Client.Arch}}')
 	BUILD_NOLOAD := docker buildx build -f Containerfile --build-arg=APP_VERSION="$(APP_VERSION)" --build-arg=BUILD_TIME="$(BUILD_TIME)" --build-arg=GIT_REVISION="$(GIT_REVISION)"
-	BUILD_CMD := $(BUILD_NOLOAD) --load
+	BUILD_CMD := $(BUILD_NOLOAD) --load --read-only
 	DIGEST_CMD := docker inspect --format "{{.Id}}"
-	RUN_CMD := docker run
+	RUN_CMD := docker run --read-only
 endif
 
 # Default target: show typical targets

@@ -5,8 +5,8 @@
 This code builds a very simple web server container image, which is handy for
 [Continuous Deployment (CD)](https://en.wikipedia.org/wiki/Continuous_deployment)
 and load balancing tests & demos.
-It is running [nginx](https://nginx.org/) as a non root, unprivileged
-user, on port 8080.
+It is running [nginx](https://nginx.org/) as a non root, unprivileged user,
+on port 8080.
 
 It returns simple content containing:
 
@@ -57,22 +57,22 @@ You can also test the image with Podman or Docker, using commands like this (rep
 $ podman run -d --rm \
    -p 127.0.0.1:8081:8080 \
    --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.10.4
+   ghcr.io/clifford2/nginx-demo:1.11.0
 $ podman run -d --rm \
    -p 127.0.0.1:8082:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.10.4
+   ghcr.io/clifford2/nginx-demo:1.11.0
 $ podman run -d --rm \
    -p 127.0.0.1:8083:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.10.4
+   ghcr.io/clifford2/nginx-demo:1.11.0
 $ podman run -d --rm \
    -p 127.0.0.1:8084:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.10.4
+   ghcr.io/clifford2/nginx-demo:1.11.0
 
 $ xdg-open http://127.0.0.1:8081/index.html
 $ curl http://127.0.0.1:8082/index.json

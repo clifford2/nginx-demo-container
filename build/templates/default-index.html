@@ -14,12 +14,12 @@ font-family: Tahoma, Verdana, Arial, sans-serif; }
 <em>but is not working as designed</em>. Further configuration is required.</p>
 
 <p>The most likely cause of this is if the <code>/usr/share/nginx/html</code>
-directory is not writable, which can happen if you run the container in
-Kubernetes with a <code>readOnlyRootFilesystem</code>, but did not mount
-a volume for <code>/usr/share/nginx/html</code> which is writable by UID {NGINX_UID}.</p>
+directory is not writable. That can happen if the container's root filesystem
+is mounted read only, and no volume is mounted for
+<code>/usr/share/nginx/html</code> which is writable by UID {NGINX_UID}.</p>
+Look for Kubernetes <code>readOnlyRootFilesystem</code> or podman / docker
+`--read-only` configurations.
 
-<p>Please see <a href="https://github.com/clifford2/nginx-demo-container/blob/main/deploy/k8s-latest.yaml">github.com/clifford2/nginx-demo-container/blob/main/deploy/k8s-latest.yaml</a> for an example Kubernetes deployment manifest that addresses this.
-
-<p><em>Thank you for using nginx.</em></p>
+<p>Please see <a href="https://github.com/clifford2/nginx-demo-container/tree/main/deploy">github.com/clifford2/nginx-demo-container/tree/main/deploy</a> for example Kubernetes deployment manifests that addresses this.
 </body>
 </html>
