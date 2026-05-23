@@ -66,10 +66,11 @@ help:
 	@echo ""
 	@echo "  reuse lint:         Check license compliance"
 	@echo "  make bump-version-{major,minor,patch}: Increment container image version"
+	# Commit before build to get correct GIT commit tag into image
+	@echo "  git add . && git commit: Commit changes to version control"
 	@echo "  make build-release: Build release image ($(IMGRELTAG))"
 	@echo "  make test-release:  Test the release image (Trivy, curl)"
 	@echo "  make sbom-release:  Generate Trivy SBOM & commit to source"
-	@echo "  git commit -a:      Commit changes to version control"
 	@echo "  make git-tag-push:  Tag git repo with current version & push"
 	@echo "  make push-release:  Push release image ($(IMGRELTAG))"
 	@echo ""
@@ -223,9 +224,9 @@ sbom-release:
 	@test -d sbom || mkdir sbom
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --no-progress
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output /sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
-#	git add sbom/sbom-v$(APP_VERSION).json
-#	git commit -m "Added SBOM for $(IMGRELTAG)"
-#	git push
+	git add sbom/sbom-v$(APP_VERSION).json
+	git commit -m "Added SBOM for $(IMGRELTAG)"
+	git push
 
 # Build & push RELEASE image
 .PHONY: push-release

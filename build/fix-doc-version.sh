@@ -14,5 +14,5 @@ if [ ! -f deploy/k8s-${ver}.yaml ]
 then
 	sed -e "s|version: .*$|version: \"${ver}\"|" -e "s|image: .*$|image: \"ghcr.io/clifford2/nginx-demo:${ver}\"|" k8s-latest.yaml > k8s-${ver}.yaml
 	ln -fs k8s-${ver}.yaml k8s-latest.yaml
-	git add k8s-${ver}.yaml
+	git add k8s-${ver}.yaml k8s-latest.yaml
 fi
