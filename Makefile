@@ -226,7 +226,7 @@ sbom-release:
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output /sbom/sbom-v$(APP_VERSION).json $(IMGRELTAG)
 	git add sbom/sbom-v$(APP_VERSION).json
 	git commit -m "Added SBOM for $(IMGRELTAG)"
-	git push
+	# git push
 
 # Build & push RELEASE image
 .PHONY: push-release
