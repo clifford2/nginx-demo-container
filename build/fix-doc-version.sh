@@ -8,7 +8,10 @@
 
 ver=$(cat .version)
 test -z "${ver}" && exit 1
-sed -i -e "s| ghcr.io/clifford2/nginx-demo.*$| ghcr.io/clifford2/nginx-demo:${ver}|" README.md
+sed -i \
+ -e "s| ghcr.io/clifford2/nginx-demo.*$| ghcr.io/clifford2/nginx-demo:${ver}|" \
+ -e "s|ver='.*'$|ver='${ver}'|" \
+ README.md
 cd deploy || exit 1
 if [ ! -f deploy/k8s-${ver}.yaml ]
 then

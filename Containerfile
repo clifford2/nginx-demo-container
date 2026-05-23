@@ -52,7 +52,7 @@ RUN echo 'Insert image details' && \
 	for ext in html json txt csv; do sed -i -e "s/{BUILD_TIME}/${BUILD_TIME}/" -e "s/{APP_VERSION}/${APP_VERSION}/" -e "s/{NGINX_VERSION}/${NGINX_VERSION}/" /usr/share/nginx/html-template/index.$ext; done && \
 	sed -i -e "s/{GIT_REVISION}/${GIT_REVISION}/" /usr/share/nginx/html-template/index.json && \
 	cp /usr/share/nginx/html-template/index.json /tmp/index.json && \
-	jq -c < /tmp/index.json > /usr/share/nginx/html-template/index.json && \
+	jq --compact-output < /tmp/index.json > /usr/share/nginx/html-template/index.json && \
 	rm /tmp/index.json
 
 
@@ -88,7 +88,7 @@ LABEL org.opencontainers.image.version="${APP_VERSION}"
 
 # Add Nginx config files
 COPY --chmod=0644 ./build/templates/nginx.conf /etc/nginx/nginx.conf
-COPY --chmod=0644 ./build/templates/default.conf /etc/nginx/conf.d/default.conf
+COPY --chmod=0644 ./build/templates/nginx-default.conf /etc/nginx/conf.d/default.conf
 
 # Add our content
 RUN echo 'Initializing templates' && \

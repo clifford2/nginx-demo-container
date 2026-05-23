@@ -1,10 +1,15 @@
 {
-  "image_version": "{APP_VERSION}",
-  "build_time": "{BUILD_TIME}",
-  "container_hostname": "{HOSTNAME}",
-  "start_time": "{CURRTIME}",
-  "color": "{COLOR}",
-  "nginx_version": "{NGINX_VERSION}",
+  "image_info": {
+    "image_version": "{APP_VERSION}",
+    "build_time": "{BUILD_TIME}",
+    "nginx_version": "{NGINX_VERSION}"
+  },
+  "container_info": {
+    "container_hostname": "{HOSTNAME}",
+    "running_as_uid": "{NGINX_UID}",
+    "start_time": "{CURRTIME}",
+    "color": "{COLOR}"
+  },
   "opencontainers_annotations": {
     "org.opencontainers.image.authors": "Clifford Weinmann <https://www.cliffordweinmann.com/>",
     "org.opencontainers.image.created": "{BUILD_TIME}",

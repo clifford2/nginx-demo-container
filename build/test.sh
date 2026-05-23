@@ -44,7 +44,7 @@ else
 
 	# Test the container image
 	ver=$(cat .version)
-	jsonver=$($curl --silent "${baseurl}/index.json" | sed -e 's/\r//g' | jq '.image_version' -r)
+	jsonver=$($curl --silent "${baseurl}/index.json" | sed -e 's/\r//g' | jq '.image_info.image_version' -r)
 	if [ "$ver" != "$jsonver" ]
 	then
 		echo "ERROR: Expected version [$ver], got JSON version [$jsonver]"

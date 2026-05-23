@@ -1,6 +1,7 @@
 image_version:{APP_VERSION}
 build_time:{BUILD_TIME}
+nginx_version:{NGINX_VERSION}
 container_hostname:{HOSTNAME}
+"running_as_uid":"{NGINX_UID}"
 start_time:{CURRTIME}
 color:{COLOR}
-nginx_version:{NGINX_VERSION}
