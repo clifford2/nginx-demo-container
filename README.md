@@ -22,7 +22,7 @@ This output is available in the following formats:
 - Plain text: `index.txt` (LF terminated)
 - Comma-separated values: `index.csv` (CR/LF terminated)
 
-An image built from this code is available at
+Images built from this code are available at
 [`ghcr.io/clifford2/nginx-demo`](https://ghcr.io/clifford2/nginx-demo).
 
 ## Using The Image
@@ -31,7 +31,7 @@ An image built from this code is available at
 
 Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
 
-Deploy the latest version (available in `deploy/k8s-<version>.yaml`) to your Kubernetes cluster with:
+Deploy the latest version to your Kubernetes cluster with:
 
 ```sh
 # Create Deployment
@@ -96,7 +96,8 @@ kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-containe
 watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
-To test the liveness probe & automatic restart of a pod, remove the `healthz.json` file so that the probe fails:
+To test the liveness probe & automatic restart of a pod, remove the
+`healthz.json` file so that the probe fails:
 
 ```sh
 kubectl get pods -l app.kubernetes.io/name=nginx-demo
@@ -105,7 +106,8 @@ kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 
 ### Deploy With Podman or Docker
 
-You can also test the image with Podman or Docker, using commands like this (replace `podman` with `docker` if desired):
+You can also test the image without Kubernetes, using Podman or Docker,
+with commands like this (replace `podman` with `docker` if desired):
 
 ```shell
 $ podman run -d --rm \
