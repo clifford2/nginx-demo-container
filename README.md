@@ -27,64 +27,43 @@ An image built from this code is available at
 
 ## Using The Image
 
-### Basic Usage
+### Basic Kubernetes Usage
 
 Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
 
-Deploy the latest version (available in [`deploy/k8s-latest.yaml`](deploy/k8s-latest.yaml)) to your Kubernetes cluster with:
+Deploy the latest version (available in `deploy/k8s-<version>.yaml`) to your Kubernetes cluster with:
 
 ```sh
 # Create Deployment
 ver='1.12.0'
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
-# Optional: create Ingress (substitute `${YOUR_DOMAIN}`)
-curl --silent \
-  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/ingress.yaml \
-  | sed -e "s/ host: .*/host: nginx-demo.${YOUR_DOMAIN}/" | kubectl apply -f -
-# Optional alternate: create OpenShift Route
+# Create ClusterIP Service
 kubectl apply -f \
-  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
-# Optional without Ingress / Route: port forward the service to your device
-# so you can access it locally (replace port 8088 to suite your needs):
-kubectl port-forward service/nginx-demo 8088:8080
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-clusterip.yaml
+# Alternative: Create NodePort Service
+kubectl apply -f \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-nodeport.yaml
 ```
 
 *Note that the `startupProbe` timing is intentionally longer than necessary to allow you to observe the transitions.*
 
-You can also test the image with Podman or Docker, using commands like this (replace `podman` with `docker` if desired):
+Optional: expose the service, with one of:
 
-```shell
-$ ver='1.12.0'
-$ podman run -d --rm \
-   -p 127.0.0.1:8081:8080 \
-   --name nginx-demo-nocolor \
-   ghcr.io/clifford2/nginx-demo:1.12.0
-$ podman run -d --rm \
-   -p 127.0.0.1:8082:8080 \
-   --name nginx-demo-blue \
-   -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.12.0
-$ podman run -d --rm \
-   -p 127.0.0.1:8083:8080 \
-   --name nginx-demo-green \
-   -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.12.0
-$ podman run -d --rm \
-   -p 127.0.0.1:8084:8080 \
-   --name nginx-demo-red \
-   -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.12.0
-
-$ xdg-open http://127.0.0.1:8081/index.html
-$ curl http://127.0.0.1:8082/index.json
-$ curl http://127.0.0.1:8083/index.txt
-$ curl http://127.0.0.1:8084/index.csv
-
-$ podman stop nginx-demo-nocolor nginx-demo-red nginx-demo-blue nginx-demo-green
+```sh
+# Create Ingress (substitute `${YOUR_DOMAIN}`)
+curl --silent \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/ingress.yaml \
+  | sed -e "s/ host: .*/host: nginx-demo.${YOUR_DOMAIN}/" | kubectl apply -f -
+# Alternate: create OpenShift Route
+kubectl apply -f \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
+# Without Ingress / Route: port forward the service to your device so that
+# you can access it locally (replace port 9090 to suite your needs):
+kubectl port-forward service/nginx-demo 9090:8080
 ```
 
-###  Rolling Update Demo
+### Kubernetes Rolling Update Demo
 
 To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/), try these steps:
 
@@ -92,9 +71,9 @@ To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/
 # Deploy an older-than-latest version:
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.6.1.yaml
 # Port forward the service to your device so you can access it locally
-# (replace port 8088 to suite your needs):
-kubectl port-forward service/nginx-demo 8088:8080
-# Connect to the service with a web browser (http://0.0.0.0:8088), and reload
+# (replace port 9090 to suite your needs):
+kubectl port-forward service/nginx-demo 9090:8080
+# Connect to the service with a web browser (http://0.0.0.0:9090), and reload
 # a few times to see the load balancing between the 3 deployments.
 #
 # Change the `$COLOR` of 2 of the deployments:
@@ -122,6 +101,39 @@ To test the liveness probe & automatic restart of a pod, remove the `healthz.jso
 ```sh
 kubectl get pods -l app.kubernetes.io/name=nginx-demo
 kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
+```
+
+### Deploy With Podman or Docker
+
+You can also test the image with Podman or Docker, using commands like this (replace `podman` with `docker` if desired):
+
+```shell
+$ podman run -d --rm \
+   -p 127.0.0.1:9091:8080 \
+   --name nginx-demo-default \
+   ghcr.io/clifford2/nginx-demo:1.12.0
+$ podman run -d --rm \
+   -p 127.0.0.1:9092:8080 \
+   --name nginx-demo-blue \
+   -e COLOR=blue \
+   ghcr.io/clifford2/nginx-demo:1.12.0
+$ podman run -d --rm \
+   -p 127.0.0.1:9093:8080 \
+   --name nginx-demo-green \
+   -e COLOR=green \
+   ghcr.io/clifford2/nginx-demo:1.12.0
+$ podman run -d --rm \
+   -p 127.0.0.1:9094:8080 \
+   --name nginx-demo-red \
+   -e COLOR=red \
+   ghcr.io/clifford2/nginx-demo:1.12.0
+
+$ xdg-open http://127.0.0.1:9091/index.html
+$ curl http://127.0.0.1:9092/index.json
+$ curl http://127.0.0.1:9093/index.txt
+$ curl http://127.0.0.1:9094/index.csv
+
+$ podman stop nginx-demo-default nginx-demo-red nginx-demo-blue nginx-demo-green
 ```
 
 ## Output Samples
@@ -182,7 +194,7 @@ nginx_version:1.29.2
 There are a couple of ways to build your own container image from this code, namely:
 
 - Build manually, using [GNU Make](https://www.gnu.org/software/make/), by running `make build-release && make test-release`
-- With [GitHub Actions](https://github.com/features/actions) (our current Continuous Integration (CI) approach) - see [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
+- With [GitHub Actions](https://github.com/features/actions) - sample configuration available in [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
 - With [Jenkins](https://www.jenkins.io/) - sample configuration available in [`Jenkinsfile`](Jenkinsfile)
 - With an [Azure DevOps Pipeline](https://azure.microsoft.com/en-us/products/devops/pipelines) - sample configuration available in [`azure-pipelines.yml`](azure-pipelines.yml) 
 - With [GitLab CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/) - sample configuration available in [`.gitlab-ci.yml`](.gitlab-ci.yml)

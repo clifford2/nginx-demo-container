@@ -246,8 +246,8 @@ push-release:
 .PHONY: lint
 lint: .check-lint-depends
 	@yamllint .github/workflows/build-image.yaml
-	@yamllint deploy/k8s-latest.yaml
-	@yamllint deploy/openshift-route.yaml
+	@yamllint deploy/service-clusterip.yaml deploy/service-nodeport.yaml deploy/ingress.yaml deploy/openshift-route.yaml
+	@yamllint deploy/k8s-$(APP_VERSION).yaml
 
 # Increment APP_VERSION major version number
 .PHONY: bump-version-major
