@@ -7,7 +7,7 @@ kind: "Ingress"
 metadata:
   name: "nginx-demo"
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: "traefik"
   rules:
     - host: "nginx-demo.example.net"
       http:
@@ -16,6 +16,6 @@ spec:
               service:
                 name: "nginx-demo"
                 port:
-                  number: 8080
+                  name: "http"
             path: "/"
             pathType: "Prefix"

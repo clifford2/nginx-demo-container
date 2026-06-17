@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 
-ver=$(cat .version)
+ver=$(cat ../.version)
 test -z "${ver}" && exit 1
 
 startupdelay=2

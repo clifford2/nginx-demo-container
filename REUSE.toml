@@ -17,3 +17,9 @@ path = ["build/semver"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© François Saint-Jacques <https://github.com/fsaintjacques>"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["build/templates/docker-entrypoint.sh", "build/templates/10-listen-on-ipv6-by-default.sh", "build/templates/15-local-resolvers.envsh", "build/templates/20-envsubst-on-templates.sh", "build/templates/30-tune-worker-processes.sh"]
+precedence = "closest"
+SPDX-FileCopyrightText = "(C) 2011-2023 F5, Inc."
+SPDX-License-Identifier = "BSD-2-Clause"

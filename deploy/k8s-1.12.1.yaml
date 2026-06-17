@@ -1,0 +1,304 @@
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: MIT-0
+
+---
+# Nginx Demo deployment - default
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "nginx-demo-default"
+  labels:
+    app.kubernetes.io/name: "nginx-demo"
+    app.kubernetes.io/instance: "nginx-demo-default"
+    app.kubernetes.io/version: "1.12.1"
+    app.kubernetes.io/component: "website"
+    app: "nginx-demo-default"
+    version: "1.12.1"
+    color: "default"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "nginx-demo"
+      app.kubernetes.io/instance: "nginx-demo-default"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "nginx-demo"
+        app.kubernetes.io/instance: "nginx-demo-default"
+        app.kubernetes.io/version: "1.12.1"
+        app.kubernetes.io/component: "website"
+        app: "nginx-demo-default"
+        version: "1.12.1"
+        color: "default"
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
+      containers:
+        - name: "nginx-demo"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.1"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - name: "http"
+              containerPort: 8080
+              protocol: "TCP"
+          startupProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 3
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              memory: "16Mi"
+            limits:
+              memory: "32Mi"
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: "File"
+          volumeMounts:
+            - name: "nginx-tmp-1"
+              mountPath: "/tmp"
+            - name: "nginx-tmp-2"
+              mountPath: "/usr/share/nginx/html"
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: "RuntimeDefault"
+---
+# Nginx Demo deployment - blue
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "nginx-demo-blue"
+  labels:
+    app.kubernetes.io/name: "nginx-demo"
+    app.kubernetes.io/instance: "nginx-demo-blue"
+    app.kubernetes.io/version: "1.12.1"
+    app.kubernetes.io/component: "website"
+    app: "nginx-demo-blue"
+    version: "1.12.1"
+    color: "blue"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "nginx-demo"
+      app.kubernetes.io/instance: "nginx-demo-blue"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "nginx-demo"
+        app.kubernetes.io/instance: "nginx-demo-blue"
+        app.kubernetes.io/version: "1.12.1"
+        app.kubernetes.io/component: "website"
+        app: "nginx-demo-blue"
+        version: "1.12.1"
+        color: "blue"
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
+      containers:
+        - name: "nginx-demo"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.1"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - name: "http"
+              containerPort: 8080
+              protocol: "TCP"
+          startupProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 3
+            initialDelaySeconds: 7
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              memory: "16Mi"
+            limits:
+              memory: "32Mi"
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: "File"
+          volumeMounts:
+            - name: "nginx-tmp-1"
+              mountPath: "/tmp"
+            - name: "nginx-tmp-2"
+              mountPath: "/usr/share/nginx/html"
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: "RuntimeDefault"
+          env:
+            - name: "COLOR"
+              value: "blue"
+---
+# Nginx Demo deployment - green
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "nginx-demo-green"
+  labels:
+    app.kubernetes.io/name: "nginx-demo"
+    app.kubernetes.io/instance: "nginx-demo-green"
+    app.kubernetes.io/version: "1.12.1"
+    app.kubernetes.io/component: "website"
+    app: "nginx-demo-green"
+    version: "1.12.1"
+    color: "green"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "nginx-demo"
+      app.kubernetes.io/instance: "nginx-demo-green"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "nginx-demo"
+        app.kubernetes.io/instance: "nginx-demo-green"
+        app.kubernetes.io/version: "1.12.1"
+        app.kubernetes.io/component: "website"
+        app: "nginx-demo-green"
+        version: "1.12.1"
+        color: "green"
+    spec:
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
+      containers:
+        - name: "nginx-demo"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.1"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - name: "http"
+              containerPort: 8080
+              protocol: "TCP"
+          startupProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 3
+            initialDelaySeconds: 12
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: "/healthz.json"
+            failureThreshold: 2
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              memory: "16Mi"
+            limits:
+              memory: "32Mi"
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: "File"
+          volumeMounts:
+            - name: "nginx-tmp-1"
+              mountPath: "/tmp"
+            - name: "nginx-tmp-2"
+              mountPath: "/usr/share/nginx/html"
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: "RuntimeDefault"
+          env:
+            - name: "COLOR"
+              value: "green"
