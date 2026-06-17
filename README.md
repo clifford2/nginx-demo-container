@@ -54,7 +54,7 @@ Optional: expose the service, with one of:
 # Create Ingress (substitute `${YOUR_DOMAIN}`)
 curl --silent \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/ingress.yaml \
-  | sed -e "s/ host: .*/host: nginx-demo.${YOUR_DOMAIN}/" | kubectl apply -f -
+  | sed -e "s/ host: .*/ host: nginx-demo.${YOUR_DOMAIN}/" | kubectl apply -f -
 # Alternate: create OpenShift Route
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
