@@ -24,6 +24,8 @@ RUN echo 'Import nginx signing key' \
 	&& echo "e09fa32f0a0eab2b879ccbbc4d0e4fb9751486eedda75e35fac65802cc9faa266425edf83e261137a2f4d16281ce2c1a5f4502930fe75154723da014214f0655 */tmp/nginx_signing.rsa.pub" | sha512sum -c - \
 	&& mv /tmp/nginx_signing.rsa.pub /etc/apk/keys/
 
+ARG NGINX_UID
+ARG NGINX_GID
 RUN addgroup -g ${NGINX_GID} -S nginx \
 	&& adduser -S -D -H -u ${NGINX_UID} -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
 
