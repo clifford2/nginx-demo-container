@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT-0
 
 # Latest as of 2026-04-22
-trivy_image='docker.io/aquasec/trivy:0.70.0@sha256:be1190afcb28352bfddc4ddeb71470835d16462af68d310f9f4bca710961a41e'
+trivy_image='docker.io/aquasec/trivy:0.70.1@sha256:53570e6911c2361ebe7995228088cf83a6b9b73e7f3cdca44bd8f8f425e80fa7'
 
 CONTAINER_ENGINE="${CONTAINER_ENGINE:-podman}"
 echo "trivy in [${CONTAINER_ENGINE}]"
