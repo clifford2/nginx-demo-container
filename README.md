@@ -35,7 +35,7 @@ Deploy the latest version to your Kubernetes cluster with:
 
 ```sh
 # Create Deployment
-ver='1.12.1'
+ver='1.12.2'
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
 # Create ClusterIP Service
@@ -73,7 +73,7 @@ To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/
 
 ```sh
 # Deploy an older-than-latest version:
-kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.6.1.yaml
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.9.0.yaml
 # Port forward the service to your device so you can access it locally
 # (replace port 9090 to suite your needs):
 kubectl port-forward service/nginx-demo 9090:8080
@@ -90,14 +90,14 @@ kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{
 }}}}'
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
-watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
+watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 
 # Upgrade to the latest image version:
-ver='1.12.1'
+ver='1.12.2'
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
-watch kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
+watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
 To test the liveness probe & automatic restart of a pod, remove the
@@ -117,22 +117,22 @@ with commands like this (replace `podman` with `docker` if desired):
 $ podman run -d --rm \
    -p 127.0.0.1:9091:8080 \
    --name nginx-demo-default \
-   ghcr.io/clifford2/nginx-demo:1.12.1
+   ghcr.io/clifford2/nginx-demo:1.12.2
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.12.1
+   ghcr.io/clifford2/nginx-demo:1.12.2
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.12.1
+   ghcr.io/clifford2/nginx-demo:1.12.2
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.12.1
+   ghcr.io/clifford2/nginx-demo:1.12.2
 
 $ xdg-open http://127.0.0.1:9091/index.html
 $ curl http://127.0.0.1:9092/index.json

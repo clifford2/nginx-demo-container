@@ -3,42 +3,49 @@
 # SPDX-License-Identifier: MIT-0
 
 ---
-# Kubernetes deployment for Nginx Demo - no COLOR set
+# Nginx Demo deployment - default
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: "nginx-demo-nocolor"
+  name: "nginx-demo-default"
   labels:
     app.kubernetes.io/name: "nginx-demo"
-    app.kubernetes.io/instance: "nginx-demo-nocolor"
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/instance: "nginx-demo-default"
+    app.kubernetes.io/version: "1.12.2"
     app.kubernetes.io/component: "website"
-    app: "nginx-demo-nocolor"
-    version: "1.12.0"
+    app: "nginx-demo-default"
+    version: "1.12.2"
     color: "default"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: "nginx-demo"
-      app.kubernetes.io/instance: "nginx-demo-nocolor"
+      app.kubernetes.io/instance: "nginx-demo-default"
   template:
     metadata:
       labels:
         app.kubernetes.io/name: "nginx-demo"
-        app.kubernetes.io/instance: "nginx-demo-nocolor"
-        app.kubernetes.io/version: "1.12.0"
+        app.kubernetes.io/instance: "nginx-demo-default"
+        app.kubernetes.io/version: "1.12.2"
         app.kubernetes.io/component: "website"
-        app: "nginx-demo-nocolor"
-        version: "1.12.0"
+        app: "nginx-demo-default"
+        version: "1.12.2"
         color: "default"
     spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.12.0"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.2"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -93,15 +100,8 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
-      restartPolicy: "Always"
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - name: "nginx-tmp-1"
-          emptyDir: {}
-        - name: "nginx-tmp-2"
-          emptyDir: {}
 ---
-# Nginx Demo deployment - Blue
+# Nginx Demo deployment - blue
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -109,10 +109,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-blue"
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/version: "1.12.2"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-blue"
-    version: "1.12.0"
+    version: "1.12.2"
     color: "blue"
 spec:
   replicas: 1
@@ -125,32 +125,36 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-blue"
-        app.kubernetes.io/version: "1.12.0"
+        app.kubernetes.io/version: "1.12.2"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-blue"
-        version: "1.12.0"
+        version: "1.12.2"
         color: "blue"
     spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.12.0"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.2"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
               containerPort: 8080
               protocol: "TCP"
-          env:
-            - name: "COLOR"
-              value: "blue"
           startupProbe:
             httpGet:
               port: 8080
               path: "/healthz.json"
             failureThreshold: 3
-            initialDelaySeconds: 8
+            initialDelaySeconds: 7
             periodSeconds: 5
             successThreshold: 1
             timeoutSeconds: 1
@@ -194,15 +198,11 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
-      restartPolicy: "Always"
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - name: "nginx-tmp-1"
-          emptyDir: {}
-        - name: "nginx-tmp-2"
-          emptyDir: {}
+          env:
+            - name: "COLOR"
+              value: "blue"
 ---
-# Nginx Demo deployment - Green
+# Nginx Demo deployment - green
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -210,10 +210,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-green"
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/version: "1.12.2"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-green"
-    version: "1.12.0"
+    version: "1.12.2"
     color: "green"
 spec:
   replicas: 1
@@ -226,26 +226,30 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-green"
-        app.kubernetes.io/version: "1.12.0"
+        app.kubernetes.io/version: "1.12.2"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-green"
-        version: "1.12.0"
+        version: "1.12.2"
         color: "green"
     spec:
       hostNetwork: false
       hostPID: false
       hostIPC: false
+      restartPolicy: "Always"
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: "nginx-tmp-1"
+          emptyDir: {}
+        - name: "nginx-tmp-2"
+          emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.12.0"
+          image: "ghcr.io/clifford2/nginx-demo:1.12.2"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
               containerPort: 8080
               protocol: "TCP"
-          env:
-            - name: "COLOR"
-              value: "green"
           startupProbe:
             httpGet:
               port: 8080
@@ -295,10 +299,6 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
-      restartPolicy: "Always"
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - name: "nginx-tmp-1"
-          emptyDir: {}
-        - name: "nginx-tmp-2"
-          emptyDir: {}
+          env:
+            - name: "COLOR"
+              value: "green"

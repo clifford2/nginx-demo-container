@@ -7,13 +7,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-demo-nocolor
+  name: nginx-demo-default
   labels:
     app.kubernetes.io/name: nginx-demo
-    app.kubernetes.io/instance: nginx-demo-nocolor
+    app.kubernetes.io/instance: nginx-demo-default
     app.kubernetes.io/version: 1.5.1
     app.kubernetes.io/component: website
-    app: nginx-demo-nocolor
+    app: nginx-demo-default
     version: 1.5.1
     color: default
 spec:
@@ -21,15 +21,15 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: nginx-demo
-      app.kubernetes.io/instance: nginx-demo-nocolor
+      app.kubernetes.io/instance: nginx-demo-default
   template:
     metadata:
       labels:
         app.kubernetes.io/name: nginx-demo
-        app.kubernetes.io/instance: nginx-demo-nocolor
+        app.kubernetes.io/instance: nginx-demo-default
         app.kubernetes.io/version: 1.5.1
         app.kubernetes.io/component: website
-        app: nginx-demo-nocolor
+        app: nginx-demo-default
         version: 1.5.1
         color: default
     spec:
