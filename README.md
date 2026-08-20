@@ -35,7 +35,7 @@ Deploy the latest version to your Kubernetes cluster with:
 
 ```sh
 # Create Deployment
-ver='1.12.2'
+ver='1.12.3'
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
 # Create ClusterIP Service
@@ -93,7 +93,7 @@ kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 
 # Upgrade to the latest image version:
-ver='1.12.2'
+ver='1.12.3'
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
@@ -117,22 +117,22 @@ with commands like this (replace `podman` with `docker` if desired):
 $ podman run -d --rm \
    -p 127.0.0.1:9091:8080 \
    --name nginx-demo-default \
-   ghcr.io/clifford2/nginx-demo:1.12.2
+   ghcr.io/clifford2/nginx-demo:1.12.3
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
    --name nginx-demo-blue \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.12.2
+   ghcr.io/clifford2/nginx-demo:1.12.3
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
    --name nginx-demo-green \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.12.2
+   ghcr.io/clifford2/nginx-demo:1.12.3
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
    --name nginx-demo-red \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.12.2
+   ghcr.io/clifford2/nginx-demo:1.12.3
 
 $ xdg-open http://127.0.0.1:9091/index.html
 $ curl http://127.0.0.1:9092/index.json

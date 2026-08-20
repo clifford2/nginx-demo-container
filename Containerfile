@@ -6,7 +6,7 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.31.3"
+ARG NGINX_VERSION="1.31.4"
 ARG BASEIMAGE="docker.io/library/alpine:3.24.1"
 ARG NGINX_UID="101"
 ARG NGINX_GID="101"
@@ -16,12 +16,12 @@ ARG NGINX_GID="101"
 # Based on https://nginx.org/en/linux_packages.html
 FROM ${BASEIMAGE} AS nginx
 
-RUN apk add --no-cache openssl curl ca-certificates curl gettext-envsubst tzdata
+RUN apk add --no-cache openssl curl ca-certificates gettext-envsubst tzdata
 
-RUN echo '@nginx https://nginx.org/packages/mainline/alpine/v3.23/main' >> /etc/apk/repositories
+RUN printf "%s%s%s\n" "@nginx https://nginx.org/packages/mainline/alpine/v" $(egrep -o '^[0-9]+\.[0-9]+' /etc/alpine-release) "/main" >> /etc/apk/repositories
 RUN echo 'Import nginx signing key' \
 	&& curl -o /tmp/nginx_signing.rsa.pub https://nginx.org/keys/nginx_signing.rsa.pub \
-	&& echo "e09fa32f0a0eab2b879ccbbc4d0e4fb9751486eedda75e35fac65802cc9faa266425edf83e261137a2f4d16281ce2c1a5f4502930fe75154723da014214f0655 */tmp/nginx_signing.rsa.pub" | sha512sum -c - \
+	&& echo 'e09fa32f0a0eab2b879ccbbc4d0e4fb9751486eedda75e35fac65802cc9faa266425edf83e261137a2f4d16281ce2c1a5f4502930fe75154723da014214f0655 /tmp/nginx_signing.rsa.pub' | sha512sum -c - \
 	&& mv /tmp/nginx_signing.rsa.pub /etc/apk/keys/
 
 ARG NGINX_UID
@@ -30,10 +30,11 @@ RUN addgroup -g ${NGINX_GID} -S nginx \
 	&& adduser -S -D -H -u ${NGINX_UID} -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
 
 ARG NGINX_VERSION
-RUN apk add "nginx@nginx=~${NGINX_VERSION}"
+RUN apk add --no-cache "nginx@nginx=~${NGINX_VERSION}"
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	&& umask 022 \
 	&& mkdir /docker-entrypoint.d
 
 # Files from https://github.com/nginx/docker-nginx

@@ -66,7 +66,7 @@ help:
 	@echo ""
 	@echo "  reuse lint:         Check license compliance"
 	@echo "  make bump-version-{major,minor,patch}: Increment container image version"
-	# Commit before build to get correct GIT commit tag into image
+	@echo "  # Commit before build to get correct GIT commit tag into image"
 	@echo "  git add . && git commit: Commit changes to version control (need tag for build)"
 	@echo "  make build-release: Build release image ($(IMGRELTAG))"
 	@echo "  make test-release:  Test the release image (Trivy, curl)"
