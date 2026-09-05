@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# Script to get software version
+#
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+usage()
+{
+	echo "Usage:" >&2
+	echo "" >&2
+	echo "List major versions:" >&2
+	echo "  $0 majors" >&2
+	echo "Show current minor version for given major version:" >&2
+	echo "  $0 minor <major_ver>" >&2
+	echo "Show current patch version for given major version:" >&2
+	echo "  $0 patch <major_ver>" >&2
+}
+
+source $(dirname $0)/../.env
+
+if [ $# -eq 1 -a "$1" = "majors" ]
+then
+	echo "${MAJOR_VERSIONS}"
+elif [ $# -eq 1 -a "$1" = "minors" ]
+then
+	for major in ${MAJOR_VERSIONS}
+	do
+		echo "${major}.${MINOR_VERSION}"
+	done
+elif [ $# -eq 1 -a "$1" = "patches" ]
+then
+	for major in ${MAJOR_VERSIONS}
+	do
+		echo "${major}.${MINOR_VERSION}.${PATCH_VERSION}"
+	done
+elif [ $# -eq 2 -a "$1" = "minor" ]
+then
+	echo "${2}.${MINOR_VERSION}"
+elif [ $# -eq 2 -a "$1" = "patch" ]
+then
+	echo "${2}.${MINOR_VERSION}.${PATCH_VERSION}"
+else
+	usage
+	exit 1
+fi

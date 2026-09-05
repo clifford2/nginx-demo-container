@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# Script to increment minor or patch version
+#
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+source .env
+
+MAJOR_VERSIONS="${MAJOR_VERSIONS:-1 2 3}"
+MINOR_VERSION="${MINOR_VERSION:-0}"
+PATCH_VERSION="${PATCH_VERSION:-0}"
+
+OLD_MINOR="${MINOR_VERSION}"
+OLD_PATCH="${PATCH_VERSION}"
+
+if [ $# -eq 1 -a "$1" = "minor" ]
+then
+	(( MINOR_VERSION = MINOR_VERSION + 1 ))
+	PATCH_VERSION="0"
+elif [ $# -eq 1 -a "$1" = "patch" ]
+then
+	(( PATCH_VERSION = PATCH_VERSION + 1 ))
+else
+	echo "Usage: $0 <minor|patch>"
+	exit 1
+fi
+
+echo "Bumping version from x.${OLD_MINOR}.${OLD_PATCH} to x.${MINOR_VERSION}.${PATCH_VERSION}"
+
+cat > .env <<-EOVER
+MAJOR_VERSIONS="${MAJOR_VERSIONS}"
+MINOR_VERSION="${MINOR_VERSION}"
+PATCH_VERSION="${PATCH_VERSION}"
+EOVER

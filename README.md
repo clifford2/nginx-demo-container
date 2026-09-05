@@ -2,18 +2,20 @@
 
 ## About
 
-This code builds a very simple HTTP server container image, which is handy for
+This code builds three very simple HTTP server container images, which are handy for
 [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment) (CD) and
 [Load balancing](https://en.wikipedia.org/wiki/Load_balancing_(computing)) tests & demos.
 It is running the [nginx](https://nginx.org/) HTTP web server as a non root,
 unprivileged user, on port 8080.
 
-It returns simple content containing:
+The container returns simple content containing:
 
 - The image version/tag (handy for CD tests & demos)
 - The image build time (handy for CD tests & demos)
 - Container hostname & start time (handy for load balancing & deployment rollout tests & demos)
-- A coloured box, controlled by the optional `$COLOR` environment variable (handy visual aid for load balancing tests & demos)
+- A customizable area:
+	- For v1 images, a coloured box, controlled by the optional `$COLOR` environment variable (handy visual aid for load balancing tests & demos)
+	- For v2 & v3 images, a message box, where a text message from the optional `$MESSAGE` environment variable will be displayed
 
 This output is available in the following formats:
 
@@ -25,19 +27,18 @@ This output is available in the following formats:
 Images built from this code are available at
 [`ghcr.io/clifford2/nginx-demo`](https://ghcr.io/clifford2/nginx-demo).
 
-## Using The Image
+## Using The Images
 
 ### Basic Kubernetes Usage
 
-Example Kubernetes manifests are available in `deploy/k8s-${version}.yaml`.
+Example Kubernetes manifests are available in `deploy/deployment-v*.yaml`.
 
 Deploy the latest version to your Kubernetes cluster with:
 
 ```sh
 # Create Deployment
-ver='1.12.3'
 kubectl apply -f \
-  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v3.yaml
 # Create ClusterIP Service
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-clusterip.yaml
@@ -72,8 +73,8 @@ kubectl port-forward service/nginx-demo 9090:8080
 To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/), try these steps:
 
 ```sh
-# Deploy an older-than-latest version:
-kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-1.9.0.yaml
+# Deploy version 1 of the image:
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v1.yaml
 # Port forward the service to your device so you can access it locally
 # (replace port 9090 to suite your needs):
 kubectl port-forward service/nginx-demo 9090:8080
@@ -81,24 +82,31 @@ kubectl port-forward service/nginx-demo 9090:8080
 # a few times to see the load balancing between the 3 deployments.
 #
 # Change the `$COLOR` of 2 of the deployments:
-kubectl patch deployment nginx-demo-blue -p '{"spec":{"template":{"spec":{
+kubectl patch deployment nginx-demo-2 -p '{"spec":{"template":{"spec":{
 "containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#1F63E0"}]}]
 }}}}'
 
-kubectl patch deployment nginx-demo-green -p '{"spec":{"template":{"spec":{
+kubectl patch deployment nginx-demo-3 -p '{"spec":{"template":{"spec":{
 "containers":[{"name":"nginx-demo","env":[{"name":"COLOR","value":"#3BC639"}]}]
 }}}}'
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 
-# Upgrade to the latest image version:
-ver='1.12.3'
-kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/k8s-${ver}.yaml
+# Upgrade to version 2 of the image:
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v2.yaml
+# Watch the rollout happen (Ctrl-C to stop),
+# while also reloading the web page to see the effects:
+watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
+
+# Upgrade to version 3 of the image:
+kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v3.yaml
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
+
+### Failed Container Restart
 
 To test the liveness probe & automatic restart of a pod, remove the
 `healthz.json` file so that the probe fails:
@@ -116,30 +124,30 @@ with commands like this (replace `podman` with `docker` if desired):
 ```shell
 $ podman run -d --rm \
    -p 127.0.0.1:9091:8080 \
-   --name nginx-demo-default \
-   ghcr.io/clifford2/nginx-demo:1.12.3
+   --name nginx-demo-1 \
+   ghcr.io/clifford2/nginx-demo:3.13.0
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
-   --name nginx-demo-blue \
+   --name nginx-demo-2 \
    -e COLOR=blue \
-   ghcr.io/clifford2/nginx-demo:1.12.3
+   ghcr.io/clifford2/nginx-demo:3.13.0
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
-   --name nginx-demo-green \
+   --name nginx-demo-3 \
    -e COLOR=green \
-   ghcr.io/clifford2/nginx-demo:1.12.3
+   ghcr.io/clifford2/nginx-demo:3.13.0
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
-   --name nginx-demo-red \
+   --name nginx-demo-4 \
    -e COLOR=red \
-   ghcr.io/clifford2/nginx-demo:1.12.3
+   ghcr.io/clifford2/nginx-demo:3.13.0
 
-$ xdg-open http://127.0.0.1:9091/index.html
+$ gio open http://127.0.0.1:9091/index.html
 $ curl http://127.0.0.1:9092/index.json
 $ curl http://127.0.0.1:9093/index.txt
 $ curl http://127.0.0.1:9094/index.csv
 
-$ podman stop nginx-demo-default nginx-demo-red nginx-demo-blue nginx-demo-green
+$ podman stop nginx-demo-1 nginx-demo-2 nginx-demo-3 nginx-demo-4
 ```
 
 ## Output Samples

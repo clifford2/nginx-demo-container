@@ -3,8 +3,8 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 
-# Latest as of 2026-08-10
-trivy_image='docker.io/aquasec/trivy:0.73.0@sha256:4bbf3824d974b70f27631005e2e6194d4d8fbd6e72c4a9e04cf521e25c5cb07f'
+# Latest as of 2026-09-05
+trivy_image='docker.io/aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969'
 
 CONTAINER_ENGINE="${CONTAINER_ENGINE:-podman}"
 echo "trivy in [${CONTAINER_ENGINE}]"

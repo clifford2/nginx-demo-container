@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+# Generate K8s Deployment resource YAML for v2+ images with $MESSAGE
+
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 
-ver=$(cat ../.version)
+ver=$1
 test -z "${ver}" && exit 1
+major=$(echo "${ver}" | cut -d. -f1)
 
 startupdelay=2
 
@@ -15,41 +18,52 @@ cat <<- HEADER
 
 HEADER
 
-for color in "" "blue" "green"
-do
-	colorlabel="${color:-default}"
+declare -a messages
+# messages=('Doc' 'Grumpy' 'Happy' 'Sleepy' 'Bashful' 'Sneezy' 'Dopey')
+# messages=('Timon' 'Pumbaa' 'Simba')
+if [ ${major} -eq 3 ]
+then
+	messages+=("Ah, you're an outcast! That's great, so are we! - Timon")
+	messages+=("They call me Mr. Pig! - Puumba")
+	messages+=("This is my kingdom. If I don't fight for it, who will? - Simba")
+else
+	messages=('Bashful' 'Sneezy' 'Dopey')
+fi
 
+for idx in "${!messages[@]}"
+do
+	(( msgidx = $idx + 1 ))
 	cat <<- DEPLOYMENTYAML
 ---
-# Nginx Demo deployment - ${colorlabel}
+# Nginx Demo deployment - ${msgidx}
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: "nginx-demo-${colorlabel}"
+  name: "nginx-demo-${msgidx}"
   labels:
     app.kubernetes.io/name: "nginx-demo"
-    app.kubernetes.io/instance: "nginx-demo-${colorlabel}"
+    app.kubernetes.io/instance: "nginx-demo-${msgidx}"
     app.kubernetes.io/version: "${ver}"
     app.kubernetes.io/component: "website"
-    app: "nginx-demo-${colorlabel}"
+    app: "nginx-demo-${msgidx}"
     version: "${ver}"
-    color: "${colorlabel}"
+    msgidx: "${msgidx}"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: "nginx-demo"
-      app.kubernetes.io/instance: "nginx-demo-${colorlabel}"
+      app.kubernetes.io/instance: "nginx-demo-${msgidx}"
   template:
     metadata:
       labels:
         app.kubernetes.io/name: "nginx-demo"
-        app.kubernetes.io/instance: "nginx-demo-${colorlabel}"
+        app.kubernetes.io/instance: "nginx-demo-${msgidx}"
         app.kubernetes.io/version: "${ver}"
         app.kubernetes.io/component: "website"
-        app: "nginx-demo-${colorlabel}"
+        app: "nginx-demo-${msgidx}"
         version: "${ver}"
-        color: "${colorlabel}"
+        msgidx: "${msgidx}"
     spec:
       hostNetwork: false
       hostPID: false
@@ -118,14 +132,9 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
-DEPLOYMENTYAML
-if [ ! -z "${color}" ]
-then
-	cat <<- COLORYAML
           env:
-            - name: "COLOR"
-              value: "${color}"
-COLORYAML
-fi
+            - name: "MESSAGE"
+              value: "${messages[$idx]}"
+DEPLOYMENTYAML
 	(( startupdelay = startupdelay + 5 ))
 done

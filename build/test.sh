@@ -5,8 +5,8 @@
 # SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 #
-# Usage: test.sh [url] [curl-command]
-# Example: ./build/test.sh "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
+# Usage: test.sh <majorver> [url] [curl-command]
+# Example: ./build/test.sh 3 "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
 # The curl command arg allows us to run curl within the container rather than
 # from the build server if required, which seems to be necessary when building
 # in Jenkins & Docker-in-Docker (can't connect to container from agent).
@@ -14,8 +14,9 @@
 
 # set -x
 rc=0
-baseurl="${1:-http://127.0.0.1:8080}"
-curl="${2:-curl}"
+majorver=${1:-3}
+baseurl="${2:-http://127.0.0.1:8080}"
+curl="${3:-curl}"
 
 # Wait for container to be ready
 max=10
@@ -43,14 +44,14 @@ else
 	echo "OK: Container ready"
 
 	# Test the container image
-	ver=$(cat .version)
+	ver=$(bash $(dirname $0)/getver patch ${majorver})
 	jsonver=$($curl --silent "${baseurl}/index.json" | sed -e 's/\r//g' | jq '.image_info.image_version' -r)
 	if [ "$ver" != "$jsonver" ]
 	then
 		echo "ERROR: Expected version [$ver], got JSON version [$jsonver]"
 		(( rc = rc + 1 ))
 	else
-		echo "OK: JSON version"
+		echo "OK: JSON version ${jsonver}"
 	fi
 
 	# The sed filter is necessary to remove CR characters added by "docker run"
@@ -60,7 +61,7 @@ else
 		echo "ERROR: Expected version [$ver], got text version [$textver]"
 		(( rc = rc + 1 ))
 	else
-		echo "OK: Text version"
+		echo "OK: Text version ${textver}"
 	fi
 
 	# CR/LF terminated output
@@ -70,7 +71,7 @@ else
 		echo "ERROR: Expected version [$ver], got CSV version [$csvver]"
 		(( rc = rc + 1 ))
 	else
-		echo "OK: CSV version"
+		echo "OK: CSV version ${csvver}"
 	fi
 fi
 

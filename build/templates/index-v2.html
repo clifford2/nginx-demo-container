@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Container - v{APP_VERSION}</title>
+<!--
+SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+SPDX-License-Identifier: MIT-0
+-->
+<style>
+  :root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-blue: #38bdf8;
+    --accent-indigo: #818cf8;
+    --badge-version: #0284c7;
+    --badge-host: #e11d48;
+    --button-bg: #334155;
+    --button-hover: #475569;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 640px;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  }
+
+  .header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ttl {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .version-tag {
+    font-size: 0.875rem;
+    background: var(--accent-blue);
+    color: #0f172a;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  .section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .card {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+  }
+
+  .card-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .badge {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .badge-version { background: #0369a1; color: #e0f2fe; }
+  .badge-host { background: #9f1239; color: #ffe4e6; font-weight: 600; }
+  .badge-time { background: #334155; color: #f1f5f9; }
+
+  a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: #7dd3fc;
+    text-decoration: underline;
+  }
+
+  .formats-list {
+    display: flex;
+    gap: 0.75rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .formats-list li {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  #wrapperbox {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  #colorbox {
+    margin-top: 0.5rem;
+    background: #111827;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    border: 1px solid var(--border-color);
+  }
+
+  .white { color: #f9fafb; }
+  .black { color: #9ca3af; }
+
+  .reloadbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  button {
+    background: var(--button-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+
+  button:hover { background: var(--button-hover); }
+
+  .footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="ttl">
+      <span>Demo Container</span>
+      <span class="version-tag">v{APP_VERSION}</span>
+    </div>
+    <p class="subtitle">A lightweight web server demo container for Continuous Deployment (CD) and Kubernetes load balancing tests.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Image Information (CD & Rolling Updates)</div>
+    <div class="grid">
+      <div class="card">
+        <span class="card-label">Image Version</span>
+        <span class="badge badge-version">{APP_VERSION}</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Build Time</span>
+        <span class="badge badge-time">{BUILD_TIME}</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Web Server</span>
+        <a href="https://nginx.org/" target="_blank">Nginx v{NGINX_VERSION}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Container Instance (Load Balancing)</div>
+    <div class="grid">
+      <div class="card">
+        <span class="card-label">Hostname / Pod ID</span>
+        <span class="badge badge-time">{HOSTNAME}</span>
+      </div>
+      <div class="card">
+        <span class="card-label"><code>$MESSAGE</code></span>
+        <span class="badge badge-host">{MESSAGE}</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Start Time</span>
+        <span class="badge badge-time">{CURRTIME}</span>
+      </div>
+      <div class="card">
+        <span class="card-label">Process User ID</span>
+        <span class="badge badge-time">UID {NGINX_UID}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Alternate Output Formats</div>
+    <ul class="formats-list">
+      <li><strong>JSON:</strong> <a href="http://127.0.0.1:8080/index.json">index.json</a></li>
+      <li><strong>TXT:</strong> <a href="http://127.0.0.1:8080/index.txt">index.txt</a></li>
+      <li><strong>CSV:</strong> <a href="http://127.0.0.1:8080/index.csv">index.csv</a></li>
+    </ul>
+  </div>
+
+  <div class="reloadbox">
+    <span id="loadTime">Page load time unknown</span>
+    <button id="toggleReload">Pause Auto Reload</button>
+  </div>
+
+  <div class="footer">
+    Source code: <a href="https://github.com/clifford2/nginx-demo-container" target="_blank">github.com/clifford2/nginx-demo-container</a>
+  </div>
+</div>
+
+<script>
+let autoReload = true;
+let reloadInterval;
+
+function updateLoadTime() {
+  const now = new Date();
+  document.getElementById('loadTime').textContent = 
+    'Page loaded at: ' + now.toISOString().replace(/\.\d+/, "");
+}
+
+function startAutoReload() {
+  const button = document.getElementById('toggleReload');
+  button.textContent = 'Pause Auto Reload';
+  reloadInterval = setInterval(() => {
+    if (autoReload) {
+      location.reload();
+    }
+  }, 2000);
+}
+
+function toggleReload() {
+  autoReload = !autoReload;
+  const button = document.getElementById('toggleReload');
+  button.textContent = autoReload ? 'Pause Auto Reload' : 'Resume Auto Reload';
+}
+
+document.getElementById('toggleReload').addEventListener('click', toggleReload);
+updateLoadTime();
+startAutoReload();
+document.getElementById('toggleReload').focus();
+</script>
+</body>
+</html>

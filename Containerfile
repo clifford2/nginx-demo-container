@@ -6,7 +6,7 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.31.4"
+ARG NGINX_VERSION="1.31.5"
 ARG BASEIMAGE="docker.io/library/alpine:3.24.1"
 ARG NGINX_UID="101"
 ARG NGINX_GID="101"
@@ -32,6 +32,9 @@ RUN addgroup -g ${NGINX_GID} -S nginx \
 ARG NGINX_VERSION
 RUN apk add --no-cache "nginx@nginx=~${NGINX_VERSION}"
 
+# Fix CVE-2026-14456 in libcrypto3 (present in docker.io/library/alpine:3.24.1)
+RUN apk add --no-cache libcrypto3=3.5.8-r0
+
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
 	&& umask 022 \
@@ -49,36 +52,46 @@ EXPOSE 8080/tcp
 STOPSIGNAL SIGQUIT
 CMD ["nginx", "-g", "daemon off;"]
 
+RUN echo 'Create template directory' && \
+	umask 022 && \
+	mkdir -p /usr/share/nginx/html-template
+
 #----------------------------------------------------------------------#
 #-# Customize content templates
 FROM nginx AS templates
-
-ARG APP_VERSION
-ARG BUILD_TIME
-ARG GIT_REVISION
-ARG NGINX_VERSION
-ARG NGINX_UID
 
 USER root
 
 # Install jq to minify index.json
 RUN apk add --no-cache jq
 
-# Add our content
-RUN echo 'Initializing templates' && \
-	umask 022 && \
-	mkdir -p /usr/share/nginx/html-template
-COPY --chmod=0644 build/templates/index.* images/favicon.ico /usr/share/nginx/html-template/
+# Add default index (fallback if entrypoint script fails)
+ARG NGINX_UID
 COPY --chmod=0644 build/templates/default-index.html /usr/share/nginx/html/index.html
 RUN sed -i -e "s/{NGINX_UID}/${NGINX_UID}/" /usr/share/nginx/html/index.html
 
-# Insert image build details (version & timestamp) into web pages.
+# Add error page to template directory
+RUN cp -p /usr/share/nginx/html/50x.html /usr/share/nginx/html-template/50x.html
+
+# Add our index pages to template directory
+ARG MAJOR_VERSION
+COPY --chmod=0644 images/favicon.ico /usr/share/nginx/html-template/favicon.ico
+COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.csv  /usr/share/nginx/html-template/index.csv
+COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.json /usr/share/nginx/html-template/index.json
+COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.txt  /usr/share/nginx/html-template/index.txt
+COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.html /usr/share/nginx/html-template/index.html
+
+# Insert image build details (versions & timestamp) into web pages.
 # Base image serves content of /usr/share/nginx/html.
 # To allow us to mount the root file system read-only (security best practice),
 # we will put our content in a non-default location, and copy it to the correct
 # location (mounted as a read-write volume) in an entrypoint script.
+ARG APP_VERSION
+ARG BUILD_TIME
+ARG GIT_REVISION
+ARG NGINX_VERSION
 RUN echo 'Insert image details' && \
-	for ext in html json txt csv; do sed -i -e "s/{BUILD_TIME}/${BUILD_TIME}/" -e "s/{APP_VERSION}/${APP_VERSION}/" -e "s/{NGINX_VERSION}/${NGINX_VERSION}/" /usr/share/nginx/html-template/index.$ext; done && \
+	for ext in html json txt csv; do sed -i -e "s/{APP_VERSION}/${APP_VERSION}/" -e "s/{BUILD_TIME}/${BUILD_TIME}/" -e "s/{NGINX_VERSION}/${NGINX_VERSION}/" /usr/share/nginx/html-template/index.$ext; done && \
 	sed -i -e "s/{GIT_REVISION}/${GIT_REVISION}/" /usr/share/nginx/html-template/index.json && \
 	cp /usr/share/nginx/html-template/index.json /tmp/index.json && \
 	jq --compact-output < /tmp/index.json > /usr/share/nginx/html-template/index.json && \
@@ -93,42 +106,39 @@ USER root
 
 # RUN /sbin/apk update && /sbin/apk upgrade && rm -rf /var/cache/apk/*
 
-ARG APP_VERSION
-ARG BUILD_TIME
-ARG GIT_REVISION
-ARG NGINX_VERSION
-ARG NGINX_UID
-ARG NGINX_GID
-
-LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
-LABEL org.opencontainers.image.authors="Clifford Weinmann <https://www.cliffordweinmann.com/>"
-LABEL org.opencontainers.image.created="${BUILD_TIME}"
-LABEL org.opencontainers.image.description="NGINX Demo"
-LABEL org.opencontainers.image.licenses="MIT-0"
-LABEL org.opencontainers.image.revision="${GIT_REVISION}"
-LABEL org.opencontainers.image.source="https://github.com/clifford2/nginx-demo-container"
-LABEL org.opencontainers.image.title="nginx-demo-container"
-LABEL org.opencontainers.image.url="https://github.com/clifford2/nginx-demo-container"
-LABEL org.opencontainers.image.version="${APP_VERSION}"
-
 # Add Nginx config files
 COPY --chmod=0644 ./build/templates/nginx.conf /etc/nginx/nginx.conf
 COPY --chmod=0644 ./build/templates/nginx-default.conf /etc/nginx/conf.d/default.conf
 
+# Directory belongs to root by default, but our entrypoint script needs to overwrite content
+ARG NGINX_UID
+ARG NGINX_GID
+RUN chown -R ${NGINX_UID}:${NGINX_GID} /usr/share/nginx/html
+
 # Add our content
-RUN echo 'Initializing templates' && \
-	umask 022 && \
-	mkdir -p /usr/share/nginx/html-template && \
-	cp -p /usr/share/nginx/html/50x.html /usr/share/nginx/html-template/50x.html && \
-	chown -R ${NGINX_UID}:${NGINX_UID} /usr/share/nginx/html
 COPY --chmod=0755 build/templates/99-subst-on-index.sh /docker-entrypoint.d/99-subst-on-index.sh
 COPY --from=templates --chmod=0644 --chown=${NGINX_UID}:${NGINX_UID} /usr/share/nginx/html/index.html /usr/share/nginx/html/index.html
 COPY --from=templates --chmod=0644 /usr/share/nginx/html-template/ /usr/share/nginx/html-template/
 
-EXPOSE 8080/tcp
-STOPSIGNAL SIGQUIT
+# EXPOSE 8080/tcp
+# STOPSIGNAL SIGQUIT
 
 USER $NGINX_UID
 
 # Necessary in case we're running the container with a read-only root filesystem
 VOLUME ["/usr/share/nginx/html"]
+
+ARG APP_VERSION
+ARG BUILD_TIME
+ARG GIT_REVISION
+
+LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
+LABEL org.opencontainers.image.authors="Clifford Weinmann <https://www.cliffordweinmann.com/>"
+LABEL org.opencontainers.image.description="NGINX Demo"
+LABEL org.opencontainers.image.licenses="MIT-0"
+LABEL org.opencontainers.image.source="https://github.com/clifford2/nginx-demo-container"
+LABEL org.opencontainers.image.title="nginx-demo-container"
+LABEL org.opencontainers.image.url="https://github.com/clifford2/nginx-demo-container"
+LABEL org.opencontainers.image.version="${APP_VERSION}"
+LABEL org.opencontainers.image.revision="${GIT_REVISION}"
+LABEL org.opencontainers.image.created="${BUILD_TIME}"
