@@ -19,30 +19,11 @@ baseurl="${2:-http://127.0.0.1:8080}"
 curl="${3:-curl}"
 
 # Wait for container to be ready
-max=10
-sleep=1
-cnt=0
-ok=0
-while [ $cnt -lt $max ]
-do
-	sleep $sleep
-	(( cnt = cnt + 1 ))
-	$curl --silent --head "${baseurl}/healthz.json" | sed -e 's/\r//g' | grep -q -w 200
-	if [ $? -eq 0 ]
-	then
-		ok=1
-		break
-	else
-		echo "WARNING: Container not ready - try $cnt"
-	fi
-done
-if [ $ok -ne 1 ]
+bash $(dirname $0)/wait.sh
+if [ $? -ne 0 ]
 then
-	echo "ERROR: Container not ready"
 	(( rc = rc + 1 ))
 else
-	echo "OK: Container ready"
-
 	# Test the container image
 	ver=$(bash $(dirname $0)/getver patch ${majorver})
 	jsonver=$($curl --silent "${baseurl}/index.json" | sed -e 's/\r//g' | jq '.image_info.image_version' -r)

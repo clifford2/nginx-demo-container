@@ -129,6 +129,7 @@ build-dev-v3: .build-dev
 # Get text-based output from running DEV container
 .PHONY: .get-text-content
 .get-text-content:
+	@bash ./build/wait.sh
 	@echo ""
 	@echo "JSON content:"
 	@echo ""
@@ -215,8 +216,9 @@ open-dev-v3: .open-dev
 
 # Start DEV instance & show results
 .PHONY: .open-dev
-.open-dev: .get-text-content
+.open-dev:
 	@make --quiet run-dev-v$(MAJOR_VERSION)
+	@make --quiet .get-text-content
 	@command -v xdg-open > /dev/null && (xdg-open http://0.0.0.0:$(DEVPORT)/index.html 2>/dev/null) || echo "Please open http://0.0.0.0:$(DEVPORT)/index.html manually in your browser"
 
 # Build RELEASE images for all major versions
@@ -272,6 +274,13 @@ run-release-v3: .run-release
 stop-release:
 	$(CONTAINER_ENGINE) stop $(IMGBASENAME)
 
+# Run tests against all RELEASE images
+.PHONY: test-release
+test-release:
+	@make --quiet test-release-v1
+	@make --quiet test-release-v2
+	@make --quiet test-release-v3
+
 # Run tests against RELEASE v1 image
 .PHONY: test-release-v1
 test-release-v1: MAJOR_VERSION := 1
@@ -298,7 +307,7 @@ test-release-v3: .test-release
 .test-release: .check-test-deps
 	@make --quiet run-release-v$(MAJOR_VERSION)
 	$(CONTAINER_ENGINE) ps -a
-	bash ./build/test.sh "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
+	bash ./build/test.sh "$(MAJOR_VERSION)" "http://0.0.0.0:$(DEVPORT)" "$(CONTAINER_ENGINE) exec -t $(IMGBASENAME) curl"
 	make --quiet stop-release
 	test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket || echo "No need to start podman socket"
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGRELTAG) --exit-code 1 --no-progress --severity HIGH,CRITICAL
@@ -315,7 +324,7 @@ sbom-release:
 	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image --scanners vuln --format spdx-json --output /sbom/sbom-v$${APP_VERSION}.json $${IMGRELTAG}; \
 	git add sbom/sbom-v$${APP_VERSION}.json; \
 	done
-	git commit -m "Added SBOM for $(bash ./build/getver patches)"
+	git commit -m "Added SBOM for $$(bash ./build/getver patches)"
 	@# git push
 
 # Push RELEASE images for all major versions
@@ -326,6 +335,7 @@ push-release:
 	do \
 	APP_VERSION=$$(bash ./build/getver patch $${major}); \
 	IMGRELTAG="$(IMGRELNAME):$${APP_VERSION}"; \
+	echo "Pushing $${IMGRELTAG}"; \
 	$(CONTAINER_ENGINE) push $${IMGRELTAG}; \
 	minor=$$(bash ./build/getver minor $${major}); \
 	$(CONTAINER_ENGINE) tag $${IMGRELTAG} $(IMGRELNAME):$${minor}; \
