@@ -61,7 +61,8 @@ kubectl apply -f \
 **Note:**
 
 > You could now access the service by port fowarding it to your device, with a command like this:
-> `kubectl port-forward service/nginx-demo 9090:8080`
+> `kubectl port-forward service/nginx-demo 9090:8080`.
+>
 > This will prove that the service is running, but not provide any Service-level load balancing,
 > as `kubectl port-forward` establishes a direct point-to-point tunnel to one single target pod.
 
