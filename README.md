@@ -24,32 +24,50 @@ This output is available in the following formats:
 - Plain text: `index.txt` (LF terminated)
 - Comma-separated values: `index.csv` (CR/LF terminated)
 
-Images built from this code are available at
-[`ghcr.io/clifford2/nginx-demo`](https://ghcr.io/clifford2/nginx-demo).
-
 ## Using The Images
 
-### Basic Kubernetes Usage
+### Basic Kubernetes Deployment
 
 Example Kubernetes manifests are available in `deploy/deployment-v*.yaml`.
 
 Deploy the latest version to your Kubernetes cluster with:
 
 ```sh
-# Create Deployment
+# Create 3 Deployments with different custom attribites
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v3.yaml
+```
+
+*Note that the `startupProbe` timing is intentionally longer than necessary to allow us to observe the transitions.*
+
+### Accessing The Service
+
+#### Service
+
+Create a service to expose the application. Options include:
+
+```sh
 # Create ClusterIP Service
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-clusterip.yaml
-# Alternative: Create NodePort Service
+# Create NodePort Service
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-nodeport.yaml
+# Create LoadBalancer Service
+kubectl apply -f \
+  https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-loadbalancer.yaml
 ```
 
-*Note that the `startupProbe` timing is intentionally longer than necessary to allow you to observe the transitions.*
+**Note:**
 
-Optional: expose the service, with one of:
+> You could now access the service by port fowarding it to your device, with a command like this:
+> `kubectl port-forward service/nginx-demo 9090:8080`
+> This will prove that the service is running, but not provide any Service-level load balancing,
+> as `kubectl port-forward` establishes a direct point-to-point tunnel to one single target pod.
+
+#### Ingress / OpenShift Route
+
+Depending on youe Kubernetes cluster, you can expose the service outside the cluster, with one of:
 
 ```sh
 # Create Ingress (substitute `${YOUR_DOMAIN}`)
@@ -62,11 +80,44 @@ kubectl apply -f /tmp/ingress.yaml
 # Alternate: create OpenShift Route
 kubectl apply -f \
   https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/openshift-route.yaml
-
-# Without Ingress / Route: port forward the service to your device so that
-# you can access it locally (replace port 9090 to suite your needs):
-kubectl port-forward service/nginx-demo 9090:8080
 ```
+
+#### Minikube
+
+*Doc: [Accessing apps](https://minikube.sigs.k8s.io/docs/handbook/accessing/)*
+
+In Minikube, if you created a LoadBalancer Service, you can access it by running:
+
+```sh
+minikube tunnel
+```
+
+In a different terminal, run this to get the external IP where you can access it:
+
+```shell
+$ kubectl get svc -l app.kubernetes.io/name=nginx-demo
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)          AGE
+nginx-demo   LoadBalancer   10.104.3.199   10.104.3.199   8080:31066/TCP   11h
+```
+
+In this example, the service should not be accessible at `http://10.104.3.199:8080/`.
+
+#### Kind
+
+*Doc: [Quick Start](https://kind.sigs.k8s.io/docs/user/configuration/)*
+
+In kind (Kubernetes in Docker), you can map extra ports from the nodes to the host machine.
+
+To do this, create the cluster with:
+
+```sh
+wget https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/kind-config.yaml
+wget https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/service-kind.yaml
+kind create cluster --config kind-config.yaml
+kubectl apply -f service-kind.yaml
+```
+
+The service should now be accessible at `http://127.0.0.1:30080/`.
 
 ### Kubernetes Rolling Update Demo
 
@@ -144,7 +195,7 @@ $ podman run -d --rm \
    ghcr.io/clifford2/nginx-demo:3.13.2
 
 $ gio open http://127.0.0.1:9091/index.html
-$ curl http://127.0.0.1:9092/index.json
+$ curl http://127.0.0.1:9092/index.json | jq '.'
 $ curl http://127.0.0.1:9093/index.txt
 $ curl http://127.0.0.1:9094/index.csv
 
@@ -217,7 +268,10 @@ nginx_version:1.29.2
 
 ## Building The Image
 
-There are a couple of ways to build your own container image from this code, namely:
+Images built from this code are available at
+[`ghcr.io/clifford2/nginx-demo`](https://ghcr.io/clifford2/nginx-demo).
+
+If you prefer to build your own container images, there are a couple of ways to do that, namely:
 
 - Build manually, using [GNU Make](https://www.gnu.org/software/make/), by running `make build-release && make test-release`
 - With [GitHub Actions](https://github.com/features/actions) - sample configuration available in [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
