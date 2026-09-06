@@ -30,10 +30,16 @@ then
 	done
 elif [ $# -eq 1 -a "$1" = "patches" ]
 then
+	patches=''
 	for major in ${MAJOR_VERSIONS}
 	do
-		echo "${major}.${MINOR_VERSION}.${PATCH_VERSION}"
+		if [ "${patches}" != "" ]
+		then
+			patches="${patches} "
+		fi
+		patches="${patches}${major}.${MINOR_VERSION}.${PATCH_VERSION}"
 	done
+	echo "${patches}"
 elif [ $# -eq 2 -a "$1" = "minor" ]
 then
 	echo "${2}.${MINOR_VERSION}"
