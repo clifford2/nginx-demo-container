@@ -114,6 +114,7 @@ To test the liveness probe & automatic restart of a pod, remove the
 ```sh
 kubectl get pods -l app.kubernetes.io/name=nginx-demo
 kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
+watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
 ### Deploy With Podman or Docker
@@ -129,17 +130,17 @@ $ podman run -d --rm \
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
    --name nginx-demo-2 \
-   -e COLOR=blue \
+   -e MESSAGE=Blue \
    ghcr.io/clifford2/nginx-demo:3.13.2
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
    --name nginx-demo-3 \
-   -e COLOR=green \
+   -e MESSAGE=Green \
    ghcr.io/clifford2/nginx-demo:3.13.2
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
    --name nginx-demo-4 \
-   -e COLOR=red \
+   -e MESSAGE=Red \
    ghcr.io/clifford2/nginx-demo:3.13.2
 
 $ gio open http://127.0.0.1:9091/index.html
@@ -154,45 +155,56 @@ $ podman stop nginx-demo-1 nginx-demo-2 nginx-demo-3 nginx-demo-4
 
 Here are some output examples from November 2025 (different code releases).
 
-HTML:
+HTML (v1):
 
-![HTML](images/sample-html.png "HTML")
+![HTML](images/sample-html-v1.png "Version 1 HTML sample")
 
-JSON:
+HTML (v3):
+
+![HTML](images/sample-html-v3.png "Version 3 HTML sample")
+
+JSON (v3, 2026-09):
 
 ```json
 {
-  "image_version": "1.7.11",
-  "build_time": "2025-11-15T05:58:19Z",
-  "container_hostname": "eeb54793d9e6",
-  "start_time": "2025-11-15T06:09:01Z",
-  "color": "#333",
-  "nginx_version": "1.29.2",
+  "image_info": {
+    "image_version": "3.13.2",
+    "build_time": "2026-09-06T04:56:29Z",
+    "nginx_version": "1.31.5"
+  },
+  "container_info": {
+    "container_hostname": "901def740287",
+    "running_as_uid": "101",
+    "start_time": "2026-09-06T06:28:18Z",
+    "message": "Blue"
+  },
   "opencontainers_annotations": {
     "org.opencontainers.image.authors": "Clifford Weinmann <https://www.cliffordweinmann.com/>",
-    "org.opencontainers.image.created": "2025-11-15T05:58:19Z",
+    "org.opencontainers.image.created": "2026-09-06T04:56:29Z",
     "org.opencontainers.image.description": "NGINX Demo",
     "org.opencontainers.image.licenses": "MIT-0",
-    "org.opencontainers.image.revision": "9243706706f0b74a5aa6f33d94f1848fc205d3f2",
+    "org.opencontainers.image.revision": "166a361b34d1afd3c8b53143819f0d5bca65e21a",
     "org.opencontainers.image.source": "https://github.com/clifford2/nginx-demo-container",
     "org.opencontainers.image.title": "nginx-demo-container",
     "org.opencontainers.image.url": "https://github.com/clifford2/nginx-demo-container",
-    "org.opencontainers.image.version": "1.7.11"
+    "org.opencontainers.image.version": "3.13.2"
   }
 }
 ```
 
-CSV:
+CSV (v2, 2026-09):
 
 ```csv
-"image_version","1.5.1"
-"build_time","2025-11-13T13:22:22Z"
-"container_hostname","330e9917d50f"
-"start_time","2025-11-13T13:37:39Z"
-"color","#1F63E0"
+"image_version","2.13.2"
+"build_time","2026-09-06T04:56:29Z"
+"nginx_version","1.31.5"
+"container_hostname","91aa91bf21e6"
+"running_as_uid","101"
+"start_time","2026-09-06T06:33:45Z"
+"message","No message"
 ```
 
-Plain text:
+Plain text (v1, 2025-11):
 
 ```text
 image_version:1.7.11
