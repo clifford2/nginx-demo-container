@@ -1,7 +1,10 @@
+---
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
+#
+# NodePort service for Kind cluster, using cluster extraPortMappings to export service to the nodePort below.
+# See kind-config.yaml for corresponding cluster configuration.
 
----
 apiVersion: "v1"
 kind: "Service"
 metadata:

@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: © 2025 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
-
+#
 # OpenShift Route
 ---
 kind: "Route"

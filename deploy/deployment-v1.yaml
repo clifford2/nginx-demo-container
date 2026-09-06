@@ -32,6 +32,7 @@ spec:
         app.kubernetes.io/component: "website"
         app: "nginx-demo-1"
         version: "1.13.2"
+        coloridx: "1"
         color: "default"
     spec:
       hostNetwork: false
@@ -131,6 +132,7 @@ spec:
         app.kubernetes.io/component: "website"
         app: "nginx-demo-2"
         version: "1.13.2"
+        coloridx: "2"
         color: "blue"
     spec:
       hostNetwork: false
@@ -233,6 +235,7 @@ spec:
         app.kubernetes.io/component: "website"
         app: "nginx-demo-3"
         version: "1.13.2"
+        coloridx: "3"
         color: "green"
     spec:
       hostNetwork: false

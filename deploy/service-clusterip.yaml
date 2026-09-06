@@ -1,5 +1,7 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
+#
+# Expose the nginx-demo app as a ClusterIP service
 
 ---
 apiVersion: "v1"

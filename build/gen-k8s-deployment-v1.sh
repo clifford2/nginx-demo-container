@@ -56,6 +56,7 @@ spec:
         app.kubernetes.io/component: "website"
         app: "nginx-demo-${msgidx}"
         version: "${ver}"
+        coloridx: "${msgidx}"
         color: "${colorlabel}"
     spec:
       hostNetwork: false
