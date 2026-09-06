@@ -46,15 +46,15 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: "nginx-demo"
-      app.kubernetes.io/instance: "nginx-demo-${colorlabel}"
+      app.kubernetes.io/instance: "nginx-demo-${msgidx}"
   template:
     metadata:
       labels:
         app.kubernetes.io/name: "nginx-demo"
-        app.kubernetes.io/instance: "nginx-demo-${colorlabel}"
+        app.kubernetes.io/instance: "nginx-demo-${msgidx}"
         app.kubernetes.io/version: "${ver}"
         app.kubernetes.io/component: "website"
-        app: "nginx-demo-${colorlabel}"
+        app: "nginx-demo-${msgidx}"
         version: "${ver}"
         color: "${colorlabel}"
     spec:
