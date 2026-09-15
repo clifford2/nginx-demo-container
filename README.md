@@ -178,22 +178,22 @@ with commands like this (replace `podman` with `docker` if desired):
 $ podman run -d --rm \
    -p 127.0.0.1:9091:8080 \
    --name nginx-demo-1 \
-   ghcr.io/clifford2/nginx-demo:3.13.2
+   ghcr.io/clifford2/nginx-demo:3.13.3
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
    --name nginx-demo-2 \
    -e MESSAGE=Blue \
-   ghcr.io/clifford2/nginx-demo:3.13.2
+   ghcr.io/clifford2/nginx-demo:3.13.3
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
    --name nginx-demo-3 \
    -e MESSAGE=Green \
-   ghcr.io/clifford2/nginx-demo:3.13.2
+   ghcr.io/clifford2/nginx-demo:3.13.3
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
    --name nginx-demo-4 \
    -e MESSAGE=Red \
-   ghcr.io/clifford2/nginx-demo:3.13.2
+   ghcr.io/clifford2/nginx-demo:3.13.3
 
 $ gio open http://127.0.0.1:9091/index.html
 $ curl http://127.0.0.1:9092/index.json | jq '.'
