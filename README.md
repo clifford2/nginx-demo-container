@@ -38,7 +38,7 @@ If you prefer to build your own container images, see [`doc/build.md`](doc/build
 For examples of how to use these images in Kubernetes, see
 [`doc/k8s.md`](doc/k8s.md).
 
-You can also test the image using Podman or Docker.
+You can also test the images using Podman or Docker.
 For examples, see [`doc/podman.md`](doc/podman.md).
 
 ## Output Samples

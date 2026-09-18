@@ -101,7 +101,7 @@ The service should now be accessible at `http://127.0.0.1:30080/`.
 To demonstrate [Kubernetes rolling update](https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/), try these steps:
 
 ```sh
-# Deploy version 1 of the image:
+# Deploy the version 1 image:
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v1.yaml
 # Port forward the service to your device so you can access it locally
 # (replace port 9090 to suite your needs):
@@ -121,13 +121,13 @@ kubectl patch deployment nginx-demo-3 -p '{"spec":{"template":{"spec":{
 # while also reloading the web page to see the effects:
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 
-# Upgrade to version 2 of the image:
+# Upgrade to the version 2 image:
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v2.yaml
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 
-# Upgrade to version 3 of the image:
+# Upgrade to the version 3 image:
 kubectl apply -f https://raw.githubusercontent.com/clifford2/nginx-demo-container/refs/heads/main/deploy/deployment-v3.yaml
 # Watch the rollout happen (Ctrl-C to stop),
 # while also reloading the web page to see the effects:

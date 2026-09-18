@@ -1,6 +1,6 @@
 # Nginx Demo Container Image
 
-You can also test the image without Kubernetes, using
+You can test the images without Kubernetes, using
 [Podman](https://podman.io/docs) or [Docker](https://docs.docker.com/).
 
 The easiest way to do this is with
