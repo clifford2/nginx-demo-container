@@ -111,7 +111,7 @@ let reloadInterval;
 function updateLoadTime() {
   const now = new Date();
   // ISO 8601 format like "2025-11-17T11:22:00Z"
-  document.getElementById('loadTime').textContent = 
+  document.getElementById('loadTime').textContent =
     'Page loaded at: ' + now.toISOString().replace(/\.\d+/, "");
 }
 

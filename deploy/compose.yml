@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+#
 # `docker compose` / `podman-compose` file
 
 services:

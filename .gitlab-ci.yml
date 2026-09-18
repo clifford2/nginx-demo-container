@@ -51,7 +51,7 @@ build-builder:
     - docker build -f build/Dockerfile.jenkins -t $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA .
     - docker push $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
 
-# Run "make" in container from "build-builder" 
+# Run "make" in container from "build-builder"
 build-image:
   stage: "build-image"
   image: $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
