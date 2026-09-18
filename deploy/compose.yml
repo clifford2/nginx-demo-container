@@ -1,0 +1,33 @@
+# `docker compose` / `podman-compose` file
+
+services:
+  lb:
+    image: "docker.io/library/haproxy:alpine"
+    ports:
+      - "9090:8080"
+      - "8404:8404"
+    volumes:
+      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
+    depends_on:
+      - "app-1"
+      - "app-2"
+      - "app-3"
+      - "app-4"
+
+  app-1:
+    image: "ghcr.io/clifford2/nginx-demo:1"
+
+  app-2:
+    image: "ghcr.io/clifford2/nginx-demo:2"
+    environment:
+      MESSAGE: "Blue"
+
+  app-3:
+    image: "ghcr.io/clifford2/nginx-demo:2"
+    environment:
+      MESSAGE: "Green"
+
+  app-4:
+    image: "ghcr.io/clifford2/nginx-demo:3"
+    environment:
+      MESSAGE: "Red"

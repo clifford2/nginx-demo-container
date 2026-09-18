@@ -169,7 +169,27 @@ kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
-### Deploy With Podman or Docker
+### Deploy With Podman or Docker Compose
+
+You can also test the image without Kubernetes, using `podman-compose`
+or `docker compose`.
+
+This example configuration starts 4 containers behind a load balancer.
+
+```sh
+# Change to directory containing config files
+cd deploy
+# Start containers with podman-compose
+podman-compose up
+# Alternate: start containers with docker compose
+docker compose up
+# Test
+watch -d -n 1 curl --no-progress-meter http://127.0.0.1:9090/index.txt
+# or
+gio open http://127.0.0.1:9090/
+```
+
+### Deploy With Podman or Docker Standalone
 
 You can also test the image without Kubernetes, using Podman or Docker,
 with commands like this (replace `podman` with `docker` if desired):

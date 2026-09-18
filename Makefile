@@ -63,7 +63,7 @@ help:
 	@echo "  make bump-version-{minor,patch}: Increment container image version"
 	@echo "  # Commit before build to get correct GIT commit tag into image"
 	@echo "  git add . && git commit: Commit changes to version control (need tag for build)"
-	@echo "  make build-release: Build release image"
+	@echo "  make build-release: Build release images"
 	@echo "  make test-release:  Test the release image (Trivy, curl)"
 	@echo "  make sbom-release:  Generate Trivy SBOM & commit to source"
 	@echo "  make git-tag-push:  Tag git repo with current version & push"
