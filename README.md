@@ -169,10 +169,19 @@ kubectl exec <podname> -- rm /usr/share/nginx/html/healthz.json
 watch -n 1 kubectl get deployments,pods -l app.kubernetes.io/name=nginx-demo
 ```
 
-### Deploy With Podman or Docker Compose
+### Deploy With Podman / Docker
 
-You can also test the image without Kubernetes, using `podman-compose`
-or `docker compose`.
+You can also test the image without Kubernetes, using
+[Podman](https://podman.io/docs) or [Docker](https://docs.docker.com/).
+
+The easiest way to do this is with
+[`podman-compose`](https://github.com/containers/podman-compose) or
+[`docker compose`](https://docs.docker.com/compose/).
+
+Alternately you can also manually start individual containers, without
+using Compose.
+
+#### Deploy With Podman Compose / Docker Compose
 
 This example configuration starts 4 containers behind a load balancer.
 
@@ -183,44 +192,48 @@ cd deploy
 podman-compose up
 # Alternate: start containers with docker compose
 docker compose up
+
 # Test
 watch -d -n 1 curl --no-progress-meter http://127.0.0.1:9090/index.txt
 # or
 gio open http://127.0.0.1:9090/
 ```
 
-### Deploy With Podman or Docker Standalone
+#### Deploy With Podman / Docker (no Compose)
 
-You can also test the image without Kubernetes, using Podman or Docker,
-with commands like this (replace `podman` with `docker` if desired):
+Example commands for starting individual containers manually
+(replace `podman` with `docker` if desired):
 
 ```shell
+# Start containers
 $ podman run -d --rm \
    -p 127.0.0.1:9091:8080 \
    --name nginx-demo-1 \
-   ghcr.io/clifford2/nginx-demo:3.13.3
+   ghcr.io/clifford2/nginx-demo:3.13.4
 $ podman run -d --rm \
    -p 127.0.0.1:9092:8080 \
    --name nginx-demo-2 \
    -e MESSAGE=Blue \
-   ghcr.io/clifford2/nginx-demo:3.13.3
+   ghcr.io/clifford2/nginx-demo:3.13.4
 $ podman run -d --rm \
    -p 127.0.0.1:9093:8080 \
    --name nginx-demo-3 \
    -e MESSAGE=Green \
-   ghcr.io/clifford2/nginx-demo:3.13.3
+   ghcr.io/clifford2/nginx-demo:3.13.4
 $ podman run -d --rm \
    -p 127.0.0.1:9094:8080 \
    --name nginx-demo-4 \
    -e MESSAGE=Red \
-   ghcr.io/clifford2/nginx-demo:3.13.3
+   ghcr.io/clifford2/nginx-demo:3.13.4
 
+# Test
 $ gio open http://127.0.0.1:9091/index.html
 $ curl http://127.0.0.1:9092/index.json | jq '.'
 $ curl http://127.0.0.1:9093/index.txt
 $ curl http://127.0.0.1:9094/index.csv
 
-$ podman stop nginx-demo-1 nginx-demo-2 nginx-demo-3 nginx-demo-4
+# Stop containers
+$ podman stop nginx-demo-{1,2,3,4}
 ```
 
 ## Output Samples
@@ -297,7 +310,7 @@ If you prefer to build your own container images, there are a couple of ways to 
 - Build manually, using [GNU Make](https://www.gnu.org/software/make/), by running `make build-release && make test-release`
 - With [GitHub Actions](https://github.com/features/actions) - sample configuration available in [`.github/workflows/build-image.yaml`](.github/workflows/build-image.yaml)
 - With [Jenkins](https://www.jenkins.io/) - sample configuration available in [`Jenkinsfile`](Jenkinsfile)
-- With an [Azure DevOps Pipeline](https://azure.microsoft.com/en-us/products/devops/pipelines) - sample configuration available in [`azure-pipelines.yml`](azure-pipelines.yml) 
+- With an [Azure DevOps Pipeline](https://azure.microsoft.com/en-us/products/devops/pipelines) - sample configuration available in [`azure-pipelines.yml`](azure-pipelines.yml)
 - With [GitLab CI/CD pipelines](https://docs.gitlab.com/ci/pipelines/) - sample configuration available in [`.gitlab-ci.yml`](.gitlab-ci.yml)
 
 ## License & Disclaimer

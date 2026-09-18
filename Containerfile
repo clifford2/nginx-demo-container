@@ -7,7 +7,7 @@
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
 ARG NGINX_VERSION="1.31.6"
-ARG BASEIMAGE="docker.io/library/alpine:3.24.1"
+ARG BASEIMAGE="docker.io/library/alpine:3.24.2"
 ARG NGINX_UID="101"
 ARG NGINX_GID="101"
 
