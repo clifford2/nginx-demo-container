@@ -1,7 +1,7 @@
 version = 1
 
 [[annotations]]
-path = ["README.md", "*/README.md", "build/templates/index-v*.*", "build/templates/default-index.html", ".env", "images/*.png", "images/favicon.ico", "CHANGELOG.md"]
+path = ["README.md", "*/README.md", "doc/*.md", "doc/images/*.png", "build/templates/index-v*.*", "build/templates/default-index.html", ".env", "build/templates/favicon.ico", "CHANGELOG.md"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>"
 SPDX-License-Identifier = "MIT-0"

@@ -10,7 +10,7 @@
 .bash_history
 .vscode
 .lesshst
-images/*.png
+doc/images/*.png
 LICENSES
-tests
+stresstest
 deploy

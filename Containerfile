@@ -75,7 +75,7 @@ RUN cp -p /usr/share/nginx/html/50x.html /usr/share/nginx/html-template/50x.html
 
 # Add our index pages to template directory
 ARG MAJOR_VERSION
-COPY --chmod=0644 images/favicon.ico /usr/share/nginx/html-template/favicon.ico
+COPY --chmod=0644 build/templates/favicon.ico /usr/share/nginx/html-template/favicon.ico
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.csv  /usr/share/nginx/html-template/index.csv
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.json /usr/share/nginx/html-template/index.json
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.txt  /usr/share/nginx/html-template/index.txt
