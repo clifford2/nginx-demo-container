@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
 ---
-# Nginx Demo deployment - 1
+# Version 2 deployment 1
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -11,10 +10,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-1"
-    app.kubernetes.io/version: "2.13.4"
+    app.kubernetes.io/version: "2.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-1"
-    version: "2.13.4"
+    version: "2.13.5"
     msgidx: "1"
 spec:
   replicas: 1
@@ -27,10 +26,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-1"
-        app.kubernetes.io/version: "2.13.4"
+        app.kubernetes.io/version: "2.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-1"
-        version: "2.13.4"
+        version: "2.13.5"
         msgidx: "1"
     spec:
       hostNetwork: false
@@ -45,7 +44,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -103,8 +102,9 @@ spec:
           env:
             - name: "MESSAGE"
               value: "Bashful"
+
 ---
-# Nginx Demo deployment - 2
+# Version 2 deployment 2
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -112,10 +112,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-2"
-    app.kubernetes.io/version: "2.13.4"
+    app.kubernetes.io/version: "2.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-2"
-    version: "2.13.4"
+    version: "2.13.5"
     msgidx: "2"
 spec:
   replicas: 1
@@ -128,10 +128,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-2"
-        app.kubernetes.io/version: "2.13.4"
+        app.kubernetes.io/version: "2.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-2"
-        version: "2.13.4"
+        version: "2.13.5"
         msgidx: "2"
     spec:
       hostNetwork: false
@@ -146,7 +146,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -204,8 +204,9 @@ spec:
           env:
             - name: "MESSAGE"
               value: "Sneezy"
+
 ---
-# Nginx Demo deployment - 3
+# Version 2 deployment 3
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -213,10 +214,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-3"
-    app.kubernetes.io/version: "2.13.4"
+    app.kubernetes.io/version: "2.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-3"
-    version: "2.13.4"
+    version: "2.13.5"
     msgidx: "3"
 spec:
   replicas: 1
@@ -229,10 +230,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-3"
-        app.kubernetes.io/version: "2.13.4"
+        app.kubernetes.io/version: "2.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-3"
-        version: "2.13.4"
+        version: "2.13.5"
         msgidx: "3"
     spec:
       hostNetwork: false
@@ -247,7 +248,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"

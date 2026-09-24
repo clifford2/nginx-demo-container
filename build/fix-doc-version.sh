@@ -33,6 +33,8 @@ bash ../build/gen-k8s-deployment.sh \
 cat > deployment-mixed.yaml <<- HEADER
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
+#
+# Deployments for 3 different image versions
 
 HEADER
 bash ../build/gen-k8s-deployment.sh \

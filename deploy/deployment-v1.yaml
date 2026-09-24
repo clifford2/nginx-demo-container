@@ -1,9 +1,8 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
 # SPDX-License-Identifier: MIT-0
 
 ---
-# Nginx Demo deployment - default
+# Version 1 deployment 1
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -11,12 +10,11 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-1"
-    app.kubernetes.io/version: "1.13.4"
+    app.kubernetes.io/version: "1.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-1"
-    version: "1.13.4"
+    version: "1.13.5"
     coloridx: "1"
-    color: "default"
 spec:
   replicas: 1
   selector:
@@ -28,12 +26,11 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-1"
-        app.kubernetes.io/version: "1.13.4"
+        app.kubernetes.io/version: "1.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-1"
-        version: "1.13.4"
+        version: "1.13.5"
         coloridx: "1"
-        color: "default"
     spec:
       hostNetwork: false
       hostPID: false
@@ -47,7 +44,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:1.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -102,8 +99,9 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
+
 ---
-# Nginx Demo deployment - blue
+# Version 1 deployment 2
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -111,12 +109,11 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-2"
-    app.kubernetes.io/version: "1.13.4"
+    app.kubernetes.io/version: "1.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-2"
-    version: "1.13.4"
+    version: "1.13.5"
     coloridx: "2"
-    color: "blue"
 spec:
   replicas: 1
   selector:
@@ -128,12 +125,11 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-2"
-        app.kubernetes.io/version: "1.13.4"
+        app.kubernetes.io/version: "1.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-2"
-        version: "1.13.4"
+        version: "1.13.5"
         coloridx: "2"
-        color: "blue"
     spec:
       hostNetwork: false
       hostPID: false
@@ -147,7 +143,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:1.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -205,8 +201,9 @@ spec:
           env:
             - name: "COLOR"
               value: "blue"
+
 ---
-# Nginx Demo deployment - green
+# Version 1 deployment 3
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -214,12 +211,11 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-3"
-    app.kubernetes.io/version: "1.13.4"
+    app.kubernetes.io/version: "1.13.5"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-3"
-    version: "1.13.4"
+    version: "1.13.5"
     coloridx: "3"
-    color: "green"
 spec:
   replicas: 1
   selector:
@@ -231,12 +227,11 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-3"
-        app.kubernetes.io/version: "1.13.4"
+        app.kubernetes.io/version: "1.13.5"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-3"
-        version: "1.13.4"
+        version: "1.13.5"
         coloridx: "3"
-        color: "green"
     spec:
       hostNetwork: false
       hostPID: false
@@ -250,7 +245,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:1.13.4"
+          image: "ghcr.io/clifford2/nginx-demo:1.13.5"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
