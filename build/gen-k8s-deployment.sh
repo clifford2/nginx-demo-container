@@ -1,41 +1,71 @@
 #!/usr/bin/env bash
-
-# Generate K8s Deployment resource YAML for v2+ images with $MESSAGE
-
+#
+# Generate K8s Deployment resource YAML
+# This version handles v 1-3 images, and accepts version/message pairs as command line arguments
+#
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
-
-ver=$1
-test -z "${ver}" && exit 1
-major=$(echo "${ver}" | cut -d. -f1)
 
 startupdelay=2
 
-cat <<- HEADER
-# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
-#
-# SPDX-License-Identifier: MIT-0
+usage() {
+	echo "Usage: $0 [majorversion message] ..."
+	exit 1
+}
 
-HEADER
-
-declare -a messages
-# messages=('Doc' 'Grumpy' 'Happy' 'Sleepy' 'Bashful' 'Sneezy' 'Dopey')
-# messages=('Timon' 'Pumbaa' 'Simba')
-if [ ${major} -eq 3 ]
+if [ $# -lt 2 ]
 then
-	messages+=("Ah, you're an outcast! That's great, so are we! - Timon")
-	messages+=("They call me Mr. Pig! - Puumba")
-	messages+=("This is my kingdom. If I don't fight for it, who will? - Simba")
-else
-	messages=('Bashful' 'Sneezy' 'Dopey')
+	usage
 fi
 
-for idx in "${!messages[@]}"
+declare -a versions
+declare -a messages
+while [ $# -gt 0 ]
 do
+	if [ $# -lt 2 ]
+	then
+		echo "Error: odd number of arguments"
+		usage
+	fi
+	versions+=("$1")
+	shift
+	messages+=("$1")
+	shift
+done
+
+cat <<- HEADER
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+HEADER
+
+for idx in "${!versions[@]}"
+do
+	major="${versions[$idx]}"
+	ver=$(bash ../build/getver patch $major)
 	(( msgidx = $idx + 1 ))
+	echo "ver $ver idx $msgidx message [${messages[$idx]}]" >&2
+
+	if [ ${major} -eq 1 ]
+	then
+		envvarname='COLOR'
+		labelname='coloridx'
+	elif [ ${major} -eq 2 ]
+	then
+		envvarname='MESSAGE'
+		labelname='msgidx'
+	elif [ ${major} -eq 3 ]
+	then
+		envvarname='MESSAGE'
+		labelname='msgidx'
+	else
+		echo "Error: Invalid major version '${major}'"
+		exit 1
+	fi
+
 	cat <<- DEPLOYMENTYAML
+
 ---
-# Nginx Demo deployment - ${msgidx}
+# Version ${major} deployment ${msgidx}
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
@@ -47,7 +77,7 @@ metadata:
     app.kubernetes.io/component: "website"
     app: "nginx-demo-${msgidx}"
     version: "${ver}"
-    msgidx: "${msgidx}"
+    ${labelname}: "${msgidx}"
 spec:
   replicas: 1
   selector:
@@ -63,7 +93,7 @@ spec:
         app.kubernetes.io/component: "website"
         app: "nginx-demo-${msgidx}"
         version: "${ver}"
-        msgidx: "${msgidx}"
+        ${labelname}: "${msgidx}"
     spec:
       hostNetwork: false
       hostPID: false
@@ -132,9 +162,14 @@ spec:
                 - "ALL"
             seccompProfile:
               type: "RuntimeDefault"
-          env:
-            - name: "MESSAGE"
-              value: "${messages[$idx]}"
 DEPLOYMENTYAML
+if [ -n "${messages[$idx]}" ]
+then
+	cat <<- ENVYAML
+          env:
+            - name: "${envvarname}"
+              value: "${messages[$idx]}"
+ENVYAML
+fi
 	(( startupdelay = startupdelay + 5 ))
 done

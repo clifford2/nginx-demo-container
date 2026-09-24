@@ -13,16 +13,33 @@ sed -i \
  README.md
 
 # Generate deployment YAML files
-
 cd $(dirname $0)/../deploy || exit 1
-# v1
-ver=$(bash ../build/getver patch 1)
-bash ../build/gen-k8s-deployment-v1.sh $ver > deployment-v1.yaml
-git add deployment-v1.yaml
-# v2 & v3
-for major in 2 3
-do
-	ver=$(bash ../build/getver patch $major)
-	bash ../build/gen-k8s-deployment-v2.sh $ver > deployment-v${major}.yaml
-	git add deployment-v${major}.yaml
-done
+
+# Generate YAML for each version
+bash ../build/gen-k8s-deployment.sh \
+	1 '' \
+	1 'blue' \
+	1 'green' > deployment-v1.yaml
+bash ../build/gen-k8s-deployment.sh \
+	2 'Bashful' \
+	2 'Sneezy' \
+	2 'Dopey' > deployment-v2.yaml
+bash ../build/gen-k8s-deployment.sh \
+	3 "Ah, you're an outcast! That's great, so are we! - Timon" \
+	3 "They call me Mr. Pig! - Puumba" \
+	3 "This is my kingdom. If I don't fight for it, who will? - Simba" > deployment-v3.yaml
+
+# Generate a mixed-version file
+cat > deployment-mixed.yaml <<- HEADER
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+HEADER
+bash ../build/gen-k8s-deployment.sh \
+	1 'blue' \
+	2 'Sneezy' \
+	3 'Dopey' >> deployment-mixed.yaml
+
+# git add deployment-v1.yaml
+# git add deployment-v2.yaml
+# git add deployment-v3.yaml
