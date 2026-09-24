@@ -61,6 +61,7 @@ help:
 	@echo ""
 	@echo "  reuse lint:         Check license compliance"
 	@echo "  make bump-version-{minor,patch}: Increment container image version"
+	@echo "  make lint:          Check for YAML syntax errors"
 	@echo "  # Commit before build to get correct GIT commit tag into image"
 	@echo "  git add . && git commit: Commit changes to version control (need tag for build)"
 	@echo "  make build-release: Build release images"
@@ -71,7 +72,6 @@ help:
 	@echo ""
 	@echo "Optional release targets:"
 	@echo ""
-	@echo "  lint:               Check for YAML syntax errors"
 	@echo "  run-release-v[123]: Run DEFAULT release container on port $(DEVPORT)"
 	@echo "  stop-release:       Stop release container"
 	@echo ""
@@ -347,9 +347,8 @@ push-release:
 # Syntax check source code
 .PHONY: lint
 lint: .check-lint-depends
-	@yamllint .github/workflows/build-image.yaml
-	@yamllint deploy/service-clusterip.yaml deploy/service-nodeport.yaml deploy/ingress.yaml deploy/openshift-route.yaml
-	@yamllint deploy/deployment-v*.yaml
+	yamllint .github/workflows/build-image.yaml
+	yamllint deploy/*.yaml
 
 # Increment APP_VERSION minor version number
 .PHONY: bump-version-minor

@@ -47,26 +47,29 @@ build-builder:
     - name: "docker.io/library/docker:29-dind"
       alias: "docker"
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f build/Dockerfile.jenkins -t $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA .
-    - docker push $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
+    - |
+      docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      docker build -f build/Dockerfile.jenkins -t $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA .
+      docker push $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
 
 # Run "make" in container from "build-builder"
 build-image:
   stage: "build-image"
-  image: $CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA
+  image: "$CI_REGISTRY_IMAGE/gitlab-builder:$CI_COMMIT_SHA"
   services:
     - name: "docker.io/library/docker:29-dind"
       alias: "docker"
   tags:
     - "saas-linux-small-amd64"
   before_script:
-    - export DOCKER_HOST="tcp://docker:2375"
-    - "docker info"
+    - |
+      export DOCKER_HOST="tcp://docker:2375"
+      docker info
   script:
-    - export DOCKER_HOST="tcp://docker:2375"
-    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE build-release
-    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE test-release
-    - docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASSWORD" "$REGISTRY_NAME"
-    - make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE push-release
-    - docker logout "$REGISTRY_NAME"
+    - |
+      export DOCKER_HOST="tcp://docker:2375"
+      make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE build-release
+      make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE test-release
+      docker login --username "$REGISTRY_USER" --password "$REGISTRY_PASSWORD" "$REGISTRY_NAME"
+      make CONTAINER_ENGINE=docker REPOBASE=$REPOBASE push-release
+      docker logout "$REGISTRY_NAME"

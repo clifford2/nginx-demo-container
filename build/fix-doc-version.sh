@@ -42,6 +42,5 @@ bash ../build/gen-k8s-deployment.sh \
 	2 'Sneezy' \
 	3 'Dopey' >> deployment-mixed.yaml
 
-# git add deployment-v1.yaml
-# git add deployment-v2.yaml
-# git add deployment-v3.yaml
+# Stage for git commit
+git add deployment-v[123].yaml deployment-mixed.yaml
