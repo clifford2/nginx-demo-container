@@ -11,6 +11,8 @@
 .vscode
 .lesshst
 doc/images/*.png
-LICENSES
+/LICENSES/
+/README.md
+/REUSE.toml
 stresstest
 deploy
