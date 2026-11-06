@@ -10,10 +10,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-1"
-    app.kubernetes.io/version: "2.13.5"
+    app.kubernetes.io/version: "2.13.7"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-1"
-    version: "2.13.5"
+    version: "2.13.7"
     msgidx: "1"
 spec:
   replicas: 1
@@ -26,10 +26,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-1"
-        app.kubernetes.io/version: "2.13.5"
+        app.kubernetes.io/version: "2.13.7"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-1"
-        version: "2.13.5"
+        version: "2.13.7"
         msgidx: "1"
     spec:
       hostNetwork: false
@@ -44,7 +44,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.7"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -112,10 +112,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-2"
-    app.kubernetes.io/version: "2.13.5"
+    app.kubernetes.io/version: "2.13.7"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-2"
-    version: "2.13.5"
+    version: "2.13.7"
     msgidx: "2"
 spec:
   replicas: 1
@@ -128,10 +128,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-2"
-        app.kubernetes.io/version: "2.13.5"
+        app.kubernetes.io/version: "2.13.7"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-2"
-        version: "2.13.5"
+        version: "2.13.7"
         msgidx: "2"
     spec:
       hostNetwork: false
@@ -146,7 +146,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.7"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"
@@ -214,10 +214,10 @@ metadata:
   labels:
     app.kubernetes.io/name: "nginx-demo"
     app.kubernetes.io/instance: "nginx-demo-3"
-    app.kubernetes.io/version: "2.13.5"
+    app.kubernetes.io/version: "2.13.7"
     app.kubernetes.io/component: "website"
     app: "nginx-demo-3"
-    version: "2.13.5"
+    version: "2.13.7"
     msgidx: "3"
 spec:
   replicas: 1
@@ -230,10 +230,10 @@ spec:
       labels:
         app.kubernetes.io/name: "nginx-demo"
         app.kubernetes.io/instance: "nginx-demo-3"
-        app.kubernetes.io/version: "2.13.5"
+        app.kubernetes.io/version: "2.13.7"
         app.kubernetes.io/component: "website"
         app: "nginx-demo-3"
-        version: "2.13.5"
+        version: "2.13.7"
         msgidx: "3"
     spec:
       hostNetwork: false
@@ -248,7 +248,7 @@ spec:
           emptyDir: {}
       containers:
         - name: "nginx-demo"
-          image: "ghcr.io/clifford2/nginx-demo:2.13.5"
+          image: "ghcr.io/clifford2/nginx-demo:2.13.7"
           imagePullPolicy: "IfNotPresent"
           ports:
             - name: "http"

@@ -7,7 +7,7 @@
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
 ARG NGINX_VERSION="1.31.8"
-ARG BASEIMAGE="docker.io/library/alpine:3.24.2"
+ARG BASEIMAGE="docker.io/library/alpine:3.24.4"
 ARG NGINX_UID="101"
 ARG NGINX_GID="101"
 
@@ -33,7 +33,7 @@ ARG NGINX_VERSION
 RUN apk add --no-cache "nginx@nginx=~${NGINX_VERSION}"
 
 # Fix CVE-2026-14456 in libcrypto3 (present in docker.io/library/alpine:3.24.1)
-RUN apk add --no-cache libcrypto3=3.5.8-r0
+# RUN apk add --no-cache libcrypto3=3.5.8-r0
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
