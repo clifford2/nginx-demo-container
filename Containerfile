@@ -6,7 +6,7 @@
 #  ARG BUILD_TIME="RFC 3339 build time"
 #  ARG GIT_REVISION="$(git rev-parse @)"
 
-ARG NGINX_VERSION="1.31.8"
+ARG NGINX_VERSION="1.31.9"
 ARG BASEIMAGE="docker.io/library/alpine:3.24.4"
 ARG NGINX_UID="101"
 ARG NGINX_GID="101"
