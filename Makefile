@@ -197,7 +197,7 @@ test-dev-v3: .test-dev
 	@bash ./build/test.sh "$(MAJOR_VERSION)" "http://0.0.0.0:$(DEVPORT)"
 	@make --quiet stop-dev
 	@test "$(CONTAINER_ENGINE)" = "podman" && systemctl --user start podman.socket
-	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGDEVTAG) --exit-code 1 --no-progress --severity HIGH,CRITICAL
+	CONTAINER_ENGINE=${CONTAINER_ENGINE} bash ./build/trivy.sh image $(IMGDEVTAG) --exit-code 1 --no-progress
 
 # Start DEV v1 instance & show results
 .PHONY: open-dev-v1

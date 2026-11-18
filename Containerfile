@@ -32,8 +32,9 @@ RUN addgroup -g ${NGINX_GID} -S nginx \
 ARG NGINX_VERSION
 RUN apk add --no-cache "nginx@nginx=~${NGINX_VERSION}"
 
-# Fix CVE-2026-14456 in libcrypto3 (present in docker.io/library/alpine:3.24.1)
-# RUN apk add --no-cache libcrypto3=3.5.8-r0
+# Fix CVE-2026-4738 in zlib=1.3.2-r1 (present in docker.io/library/alpine:3.24.4)
+# Improper Restriction of Operations within the Bounds of a Memory Buffer
+RUN apk add --no-cache zlib=1.4-r0
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
@@ -74,8 +75,8 @@ RUN sed -i -e "s/{NGINX_UID}/${NGINX_UID}/" /usr/share/nginx/html/index.html
 RUN cp -p /usr/share/nginx/html/50x.html /usr/share/nginx/html-template/50x.html
 
 # Add our index pages to template directory
-ARG MAJOR_VERSION
 COPY --chmod=0644 build/templates/favicon.ico /usr/share/nginx/html-template/favicon.ico
+ARG MAJOR_VERSION
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.csv  /usr/share/nginx/html-template/index.csv
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.json /usr/share/nginx/html-template/index.json
 COPY --chmod=0644 build/templates/index-v${MAJOR_VERSION}.txt  /usr/share/nginx/html-template/index.txt
